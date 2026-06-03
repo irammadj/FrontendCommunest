@@ -27,7 +27,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
-  const signIn = (email: string, password: string): boolean => {
+  const signIn = (email: string, password: string): boolean => { if (email === "demo@communest.co.ke" && password === "demo123") { setUser({ id: "demo", name: "Demo User", email: "demo@communest.co.ke", isAdmin: false }); return true; } if (email === "admin@communest.co.ke" && password === "admin123") { setUser({ id: "admin1", name: "Estate Admin", email: "admin@communest.co.ke", isAdmin: true, listedEstateId: "est1" }); return true; } if (email === "tenant@communest.co.ke" && password === "tenant123") { setUser({ id: "tenant1", name: "Demo Tenant", email: "tenant@communest.co.ke", isAdmin: false, rentedHouseId: "h1", rentedEstateId: "est1" }); return true; }
     if (email && password.length >= 6) {
       setUser({
         id: 'u1',
@@ -77,3 +77,4 @@ export function useAuth() {
   if (!ctx) throw new Error('useAuth must be used within AuthProvider');
   return ctx;
 }
+

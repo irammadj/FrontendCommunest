@@ -55,7 +55,7 @@ export default function EstatePage() {
   }
 
   // Signed in but no rented house
-  if (!user?.rentedEstateId) {
+  if (!user?.rentedEstateId && !user?.listedEstateId) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center" style={{ background: '#060d17' }}>
         <div className="rounded-3xl p-12 max-w-md w-full" style={{ background: '#0d1a2e', border: '1px solid #1e3a5f' }}>
@@ -84,7 +84,7 @@ export default function EstatePage() {
     );
   }
 
-  const estate = mockEstates.find(e => e.id === user.rentedEstateId);
+  const estate = mockEstates.find(e => e.id === (user.isAdmin ? user.listedEstateId : user.rentedEstateId));
   const rentedHouse = mockHouses.find(h => h.id === user.rentedHouseId);
   const isAdmin = user.isAdmin;
 
