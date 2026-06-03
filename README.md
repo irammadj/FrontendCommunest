@@ -1,5 +1,5 @@
 
-  # Follow file instructions
+Communest Frontend Project
 
   This is a code bundle for Follow file instructions. The original project is available at https://www.figma.com/design/6sj8QKMww2LbRV5ag3Ehvu/Follow-file-instructions.
 
