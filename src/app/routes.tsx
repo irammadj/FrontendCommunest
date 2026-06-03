@@ -26,4 +26,6 @@ export const router = createBrowserRouter([
       { path: 'signin', Component: SignInPage },
     ],
   },
-]);
+], {
+  basename: '/FrontendCommunest/',
+});
