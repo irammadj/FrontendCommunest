@@ -15,9 +15,6 @@ import {
   ArrowLeft,
   HelpCircle,
   MapPin,
-  CreditCard,
-  Wrench,
-  Bell,
   Star,
 } from "lucide-react";
 
@@ -63,7 +60,7 @@ const faqs: FAQ[] = [
   {
     category: "Estate Admins",
     q: "How do I list my estate on Communest?",
-    a: 'Click "List Your Estate" on the homepage or navigate to /list-estate. Fill in your estate details, upload photos, and submit for review. Approval takes 2–3 business days.',
+    a: 'Click "List Your Estate" on the homepage. Fill in your estate details, upload photos, and submit for review. Approval takes 2–3 business days.',
   },
   {
     category: "Estate Admins",
@@ -73,7 +70,7 @@ const faqs: FAQ[] = [
   {
     category: "Estate Admins",
     q: "How do I send announcements to tenants?",
-    a: 'Go to My Estate → Announcements tab and click "Post Announcement". All tenants in your estate will see it immediately in their portal.',
+    a: 'Go to My Estate → Notifications tab and click "Post Notification". All tenants in your estate will see it immediately in their portal.',
   },
   {
     category: "Account",
@@ -93,36 +90,64 @@ const faqs: FAQ[] = [
 ];
 
 const navLinks = [
-  { label: "Home", path: "/", icon: Home, desc: "Back to the main page" },
+  {
+    label: "Home",
+    path: "/FrontendCommunest/",
+    icon: Home,
+    desc: "Back to the main page",
+  },
   {
     label: "Explore Estates",
-    path: "/explore",
+    path: "/FrontendCommunest/explore",
     icon: Search,
     desc: "Browse all available estates",
   },
   {
     label: "My Estate Portal",
-    path: "/my-estate",
+    path: "/FrontendCommunest/estate",
     icon: Building2,
     desc: "Access your estate dashboard",
   },
   {
     label: "List Your Estate",
-    path: "/list-estate",
+    path: "/FrontendCommunest/list-estate",
     icon: Star,
     desc: "Register your estate on Communest",
   },
   {
     label: "About Us",
-    path: "/about",
+    path: "/FrontendCommunest/about",
     icon: HelpCircle,
     desc: "Learn about Communest",
   },
   {
     label: "Sign In / Register",
-    path: "/signin",
+    path: "/FrontendCommunest/signin",
     icon: User,
     desc: "Access your account",
+  },
+];
+
+const quickLinks = [
+  {
+    label: "Explore Estates",
+    path: "/FrontendCommunest/explore",
+    icon: Search,
+  },
+  {
+    label: "My Estate",
+    path: "/FrontendCommunest/estate",
+    icon: Building2,
+  },
+  {
+    label: "List Estate",
+    path: "/FrontendCommunest/list-estate",
+    icon: Star,
+  },
+  {
+    label: "Sign In",
+    path: "/FrontendCommunest/signin",
+    icon: User,
   },
 ];
 
@@ -308,28 +333,11 @@ export default function ChatBot() {
                     Quick Links
                   </p>
                   <div className="grid grid-cols-2 gap-2">
-                    {[
-                      {
-                        label: "Explore Estates",
-                        path: "/explore",
-                        icon: Search,
-                      },
-                      {
-                        label: "My Estate",
-                        path: "/my-estate",
-                        icon: Building2,
-                      },
-                      {
-                        label: "List Estate",
-                        path: "/list-estate",
-                        icon: Star,
-                      },
-                      { label: "Sign In", path: "/signin", icon: User },
-                    ].map(({ label, path, icon: Icon }) => (
+                    {quickLinks.map(({ label, path, icon: Icon }) => (
                       <a
                         key={path}
                         href={path}
-                        className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs transition-all hover:border-blue-500/40"
+                        className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs transition-all hover:bg-white/5"
                         style={{
                           background: "#060d17",
                           border: "1px solid #1e3a5f",
@@ -486,13 +494,13 @@ export default function ChatBot() {
             {screen === "navigate" && (
               <div className="p-4 space-y-2">
                 <p className="text-xs px-1 mb-3" style={{ color: "#475569" }}>
-                  Select a page to navigate to:
+                  Click any link to navigate:
                 </p>
                 {navLinks.map(({ label, path, icon: Icon, desc }) => (
                   <a
                     key={path}
                     href={path}
-                    className="flex items-center gap-4 p-4 rounded-2xl transition-all hover:-translate-y-0.5"
+                    className="w-full flex items-center gap-4 p-4 rounded-2xl text-left transition-all hover:-translate-y-0.5"
                     style={{
                       background: "#0d1a2e",
                       border: "1px solid #1e3a5f",
@@ -613,21 +621,21 @@ export default function ChatBot() {
                         icon: Facebook,
                         label: "Facebook",
                         handle: "@CommunestKE",
-                        href: "https://facebook.com",
+                        href: "https://facebook.com/communestke",
                         color: "#1877f2",
                       },
                       {
                         icon: Twitter,
                         label: "Twitter / X",
                         handle: "@CommunestKE",
-                        href: "https://twitter.com",
+                        href: "https://twitter.com/communestke",
                         color: "#1da1f2",
                       },
                       {
                         icon: Instagram,
                         label: "Instagram",
                         handle: "@communest.ke",
-                        href: "https://instagram.com",
+                        href: "https://instagram.com/communest.ke",
                         color: "#e1306c",
                       },
                     ].map(({ icon: Icon, label, handle, href, color }) => (

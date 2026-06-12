@@ -21,6 +21,10 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { mockEstates, mockHouses } from "../data/mockData";
+import {
+  sendNotificationEmails,
+  getTenantEmailsForEstate,
+} from "../services/emailService";
 
 const mockAnnouncements = [
   {
@@ -308,7 +312,7 @@ export default function EstatePage() {
 
   const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
     { id: "overview", label: "Overview", icon: Home },
-    { id: "announcements", label: "Announcements", icon: Bell },
+    { id: "announcements", label: "Notifications", icon: Bell },
     { id: "maintenance", label: "Maintenance", icon: Wrench },
     { id: "payments", label: "Payments", icon: CreditCard },
     { id: "inquiries", label: "Inquiries", icon: MessageSquare },
@@ -317,27 +321,37 @@ export default function EstatePage() {
       : []),
   ];
 
-  const handleInquirySubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (inquiryText.trim()) {
-      setInquirySubmitted(true);
-      setInquiryText("");
-    }
-  };
-
-  const handlePostAnnouncement = (e: React.FormEvent) => {
+  const handlePostAnnouncement = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newAnnouncement.title && newAnnouncement.body) {
-      setAnnouncements((prev) => [
-        {
-          id: Date.now().toString(),
-          ...newAnnouncement,
-          date: new Date().toISOString().split("T")[0],
-        },
-        ...prev,
-      ]);
+      const newNotification = {
+        id: Date.now().toString(),
+        ...newAnnouncement,
+        date: new Date().toISOString().split("T")[0],
+      };
+
+      setAnnouncements((prev) => [newNotification, ...prev]);
       setNewAnnouncement({ title: "", body: "", type: "notice" });
       setShowPostAnnouncement(false);
+
+      // Send emails to all tenants of this estate
+      const tenantEmails = getTenantEmailsForEstate(estate!.id);
+      if (tenantEmails.length > 0) {
+        const emailSent = await sendNotificationEmails({
+          estateId: estate!.id,
+          estateName: estate!.name,
+          tenantEmails,
+          notificationTitle: newAnnouncement.title,
+          notificationBody: newAnnouncement.body,
+          notificationType: newAnnouncement.type,
+        });
+
+        if (emailSent) {
+          console.log(
+            `✓ Notification posted and ${tenantEmails.length} email(s) sent to tenants`,
+          );
+        }
+      }
     }
   };
 
@@ -379,6 +393,26 @@ export default function EstatePage() {
       ]);
       setNewPaymentOption({ method: "", details: "", dueDay: "" });
       setShowPostPayment(false);
+    }
+  };
+
+  const handleInquirySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (inquiryText.trim()) {
+      setInquiries((prev) => [
+        {
+          id: Date.now().toString(),
+          tenant: user.name || "You",
+          unit: rentedHouse?.houseNumber || "—",
+          message: inquiryText,
+          date: new Date().toISOString().split("T")[0],
+          reply: "",
+        },
+        ...prev,
+      ]);
+      setInquiryText("");
+      setInquirySubmitted(true);
+      setTimeout(() => setInquirySubmitted(false), 3000);
     }
   };
 
@@ -507,7 +541,7 @@ export default function EstatePage() {
         {activeTab === "overview" && (
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {/* Announcements summary */}
+              {/* Notifications summary */}
               <button
                 onClick={() => setActiveTab("announcements")}
                 className="rounded-2xl p-6 text-left transition-all hover:-translate-y-0.5 group"
@@ -527,7 +561,7 @@ export default function EstatePage() {
                   />
                 </div>
                 <p className="text-xs mb-1" style={{ color: "#475569" }}>
-                  Announcements
+                  Notifications
                 </p>
                 <p
                   className="text-sm mb-1"
@@ -688,22 +722,25 @@ export default function EstatePage() {
                   <h3 className="text-white mb-5" style={{ fontWeight: 700 }}>
                     Estate Information
                   </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     {[
                       { label: "Management", value: estate.management },
                       { label: "Contact", value: estate.phone },
                       { label: "Email", value: estate.email },
                       { label: "Total Area", value: estate.area },
                     ].map(({ label, value }) => (
-                      <div key={label}>
+                      <div
+                        key={label}
+                        className="flex justify-between items-start py-3 border-b border-slate-700 last:border-b-0"
+                      >
                         <p
-                          className="text-xs mb-1"
-                          style={{ color: "#475569" }}
+                          className="text-xs"
+                          style={{ color: "#475569", fontWeight: 500 }}
                         >
                           {label}
                         </p>
                         <p
-                          className="text-sm"
+                          className="text-sm text-right break-words max-w-xs"
                           style={{ color: "#94a3b8", fontWeight: 500 }}
                         >
                           {value}
@@ -717,7 +754,7 @@ export default function EstatePage() {
           </div>
         )}
 
-        {/* Announcements */}
+        {/* Notifications */}
         {activeTab === "announcements" && (
           <div>
             {isAdmin && (
@@ -730,7 +767,7 @@ export default function EstatePage() {
                     fontWeight: 600,
                   }}
                 >
-                  <Plus size={15} /> Post Announcement
+                  <Plus size={15} /> Post Notification
                 </button>
               </div>
             )}
@@ -791,7 +828,7 @@ export default function EstatePage() {
               ))}
             </div>
 
-            {/* Post Announcement modal */}
+            {/* Post Notification modal */}
             {showPostAnnouncement && (
               <div
                 className="fixed inset-0 z-50 flex items-center justify-center px-4"
@@ -809,7 +846,7 @@ export default function EstatePage() {
                       className="text-white"
                       style={{ fontWeight: 700, fontSize: 20 }}
                     >
-                      Post Announcement
+                      Post Notification
                     </h3>
                     <button
                       onClick={() => setShowPostAnnouncement(false)}
@@ -862,7 +899,7 @@ export default function EstatePage() {
                             title: e.target.value,
                           }))
                         }
-                        placeholder="Announcement title"
+                        placeholder="Notification title"
                         className="w-full px-4 py-3 rounded-xl text-sm outline-none"
                         style={{
                           background: "#060d17",
@@ -886,7 +923,7 @@ export default function EstatePage() {
                             body: e.target.value,
                           }))
                         }
-                        placeholder="Write your announcement…"
+                        placeholder="Write your notification…"
                         rows={4}
                         className="w-full px-4 py-3 rounded-xl text-sm outline-none resize-none"
                         style={{
@@ -904,7 +941,7 @@ export default function EstatePage() {
                         fontWeight: 600,
                       }}
                     >
-                      Post Announcement
+                      Post Notification
                     </button>
                   </form>
                 </div>
