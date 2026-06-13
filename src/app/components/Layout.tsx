@@ -3,7 +3,8 @@ import { Outlet } from "react-router";
 import { Navbar } from "./Navbar";
 import { MenuBar } from "./MenuBar";
 import { Footer } from "./Footer";
-import OnboardingGuide from "./OnboardingGuide"; // ← ADD THIS LINE
+import OnboardingGuide from "./OnboardingGuide";
+import ChatBot from "./ChatBot"; // 👈 Add this
 
 export function Layout() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -14,12 +15,13 @@ export function Layout() {
       style={{ background: "#060d17" }}
     >
       <Navbar onMenuOpen={() => setMenuOpen(true)} />
-      <OnboardingGuide /> {/* ← ADD THIS LINE */}
+      <OnboardingGuide />
       <MenuBar open={menuOpen} onClose={() => setMenuOpen(false)} />
       <main className="flex-1">
         <Outlet />
       </main>
       <Footer />
+      <ChatBot /> {/* 👈 Add this */}
     </div>
   );
 }
