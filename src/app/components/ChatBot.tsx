@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
 import {
   MessageSquare,
   X,
@@ -93,53 +92,68 @@ const faqs: FAQ[] = [
 const navLinks = [
   {
     label: "Home",
-    path: "/",
+    path: "/FrontendCommunest/",
     icon: Home,
     desc: "Back to the main page",
   },
   {
     label: "Explore Estates",
-    path: "/explore",
+    path: "/FrontendCommunest/explore",
     icon: Search,
     desc: "Browse all available estates",
   },
   {
     label: "My Estate Portal",
-    path: "/estate",
+    path: "/FrontendCommunest/estate",
     icon: Building2,
     desc: "Access your estate dashboard",
   },
   {
     label: "List Your Estate",
-    path: "/list-estate",
+    path: "/FrontendCommunest/list-estate",
     icon: Star,
     desc: "Register your estate on Communest",
   },
   {
     label: "About Us",
-    path: "/about",
+    path: "/FrontendCommunest/about",
     icon: HelpCircle,
     desc: "Learn about Communest",
   },
   {
     label: "Sign In / Register",
-    path: "/signin",
+    path: "/FrontendCommunest/signin",
     icon: User,
     desc: "Access your account",
   },
 ];
 
 const quickLinks = [
-  { label: "Explore Estates", path: "/explore", icon: Search },
-  { label: "My Estate", path: "/estate", icon: Building2 },
-  { label: "List Estate", path: "/list-estate", icon: Star },
-  { label: "Sign In", path: "/signin", icon: User },
+  {
+    label: "Explore Estates",
+    path: "/FrontendCommunest/explore",
+    icon: Search,
+  },
+  {
+    label: "My Estate",
+    path: "/FrontendCommunest/estate",
+    icon: Building2,
+  },
+  {
+    label: "List Estate",
+    path: "/FrontendCommunest/list-estate",
+    icon: Star,
+  },
+  {
+    label: "Sign In",
+    path: "/FrontendCommunest/signin",
+    icon: User,
+  },
 ];
 
 const categories = [...new Set(faqs.map((f) => f.category))];
 
 export default function ChatBot() {
-  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [screen, setScreen] = useState<Screen>("home");
   const [selectedFaq, setSelectedFaq] = useState<FAQ | null>(null);
@@ -149,12 +163,6 @@ export default function ChatBot() {
     setScreen("home");
     setSelectedFaq(null);
     setSelectedCategory(null);
-  };
-
-  const handleNavigate = (path: string) => {
-    navigate(path);
-    setIsOpen(false);
-    goHome();
   };
 
   const filteredFaqs = selectedCategory
@@ -326,19 +334,20 @@ export default function ChatBot() {
                   </p>
                   <div className="grid grid-cols-2 gap-2">
                     {quickLinks.map(({ label, path, icon: Icon }) => (
-                      <button
+                      <a
                         key={path}
-                        onClick={() => handleNavigate(path)}
+                        href={path}
                         className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs transition-all hover:bg-white/5"
                         style={{
                           background: "#060d17",
                           border: "1px solid #1e3a5f",
                           color: "#64748b",
+                          textDecoration: "none",
                         }}
                       >
                         <Icon size={13} style={{ color: "#3b82f6" }} />
                         {label}
-                      </button>
+                      </a>
                     ))}
                   </div>
                 </div>
@@ -488,13 +497,14 @@ export default function ChatBot() {
                   Click any link to navigate:
                 </p>
                 {navLinks.map(({ label, path, icon: Icon, desc }) => (
-                  <button
+                  <a
                     key={path}
-                    onClick={() => handleNavigate(path)}
+                    href={path}
                     className="w-full flex items-center gap-4 p-4 rounded-2xl text-left transition-all hover:-translate-y-0.5"
                     style={{
                       background: "#0d1a2e",
                       border: "1px solid #1e3a5f",
+                      textDecoration: "none",
                     }}
                   >
                     <div
@@ -518,7 +528,7 @@ export default function ChatBot() {
                       </p>
                     </div>
                     <ChevronRight size={14} style={{ color: "#475569" }} />
-                  </button>
+                  </a>
                 ))}
               </div>
             )}
