@@ -1,9 +1,6 @@
 ﻿# Dependencies
 node_modules/
 
-# Old build output
-dist/
-
 # Editor
 .vscode/
 
