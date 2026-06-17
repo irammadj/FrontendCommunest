@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import {
   MessageSquare,
   X,
@@ -18,7 +19,7 @@ import {
   Star,
 } from "lucide-react";
 
-type Screen = "home" | "faq" | "contact" | "navigate" | "faq-answer";
+type Screen = "home" | "faq" | "contact" | "faq-answer";
 
 interface FAQ {
   q: string;
@@ -89,71 +90,17 @@ const faqs: FAQ[] = [
   },
 ];
 
-const navLinks = [
-  {
-    label: "Home",
-    path: "/FrontendCommunest/",
-    icon: Home,
-    desc: "Back to the main page",
-  },
-  {
-    label: "Explore Estates",
-    path: "/FrontendCommunest/explore",
-    icon: Search,
-    desc: "Browse all available estates",
-  },
-  {
-    label: "My Estate Portal",
-    path: "/FrontendCommunest/estate",
-    icon: Building2,
-    desc: "Access your estate dashboard",
-  },
-  {
-    label: "List Your Estate",
-    path: "/FrontendCommunest/list-estate",
-    icon: Star,
-    desc: "Register your estate on Communest",
-  },
-  {
-    label: "About Us",
-    path: "/FrontendCommunest/about",
-    icon: HelpCircle,
-    desc: "Learn about Communest",
-  },
-  {
-    label: "Sign In / Register",
-    path: "/FrontendCommunest/signin",
-    icon: User,
-    desc: "Access your account",
-  },
-];
-
 const quickLinks = [
-  {
-    label: "Explore Estates",
-    path: "/FrontendCommunest/explore",
-    icon: Search,
-  },
-  {
-    label: "My Estate",
-    path: "/FrontendCommunest/estate",
-    icon: Building2,
-  },
-  {
-    label: "List Estate",
-    path: "/FrontendCommunest/list-estate",
-    icon: Star,
-  },
-  {
-    label: "Sign In",
-    path: "/FrontendCommunest/signin",
-    icon: User,
-  },
+  { label: "Explore Estates", path: "/explore", icon: Search },
+  { label: "My Estate", path: "/estate", icon: Building2 },
+  { label: "List Estate", path: "/list-estate", icon: Star },
+  { label: "Sign In", path: "/signin", icon: User },
 ];
 
 const categories = [...new Set(faqs.map((f) => f.category))];
 
 export default function ChatBot() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [screen, setScreen] = useState<Screen>("home");
   const [selectedFaq, setSelectedFaq] = useState<FAQ | null>(null);
@@ -163,6 +110,12 @@ export default function ChatBot() {
     setScreen("home");
     setSelectedFaq(null);
     setSelectedCategory(null);
+  };
+
+  const handleNavigate = (path: string) => {
+    navigate(path);
+    setIsOpen(false);
+    goHome();
   };
 
   const filteredFaqs = selectedCategory
@@ -220,9 +173,7 @@ export default function ChatBot() {
                       ? "Frequently Asked Questions"
                       : screen === "contact"
                         ? "Contact & Social"
-                        : screen === "navigate"
-                          ? "Navigate the Site"
-                          : "Answer"}
+                        : "Answer"}
                 </p>
               </div>
             </div>
@@ -270,14 +221,6 @@ export default function ChatBot() {
                     screen: "faq" as Screen,
                     color: "#3b82f6",
                     bg: "rgba(59,130,246,0.1)",
-                  },
-                  {
-                    icon: MapPin,
-                    label: "Navigate the Website",
-                    desc: "Go to a specific page or section",
-                    screen: "navigate" as Screen,
-                    color: "#10b981",
-                    bg: "rgba(16,185,129,0.1)",
                   },
                   {
                     icon: Phone,
@@ -334,20 +277,19 @@ export default function ChatBot() {
                   </p>
                   <div className="grid grid-cols-2 gap-2">
                     {quickLinks.map(({ label, path, icon: Icon }) => (
-                      <a
+                      <button
                         key={path}
-                        href={path}
+                        onClick={() => handleNavigate(path)}
                         className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs transition-all hover:bg-white/5"
                         style={{
                           background: "#060d17",
                           border: "1px solid #1e3a5f",
                           color: "#64748b",
-                          textDecoration: "none",
                         }}
                       >
                         <Icon size={13} style={{ color: "#3b82f6" }} />
                         {label}
-                      </a>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -487,49 +429,6 @@ export default function ChatBot() {
                 >
                   Back to Home
                 </button>
-              </div>
-            )}
-
-            {/* Navigate screen */}
-            {screen === "navigate" && (
-              <div className="p-4 space-y-2">
-                <p className="text-xs px-1 mb-3" style={{ color: "#475569" }}>
-                  Click any link to navigate:
-                </p>
-                {navLinks.map(({ label, path, icon: Icon, desc }) => (
-                  <a
-                    key={path}
-                    href={path}
-                    className="w-full flex items-center gap-4 p-4 rounded-2xl text-left transition-all hover:-translate-y-0.5"
-                    style={{
-                      background: "#0d1a2e",
-                      border: "1px solid #1e3a5f",
-                      textDecoration: "none",
-                    }}
-                  >
-                    <div
-                      className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={{ background: "rgba(29,111,206,0.1)" }}
-                    >
-                      <Icon size={16} style={{ color: "#3b82f6" }} />
-                    </div>
-                    <div className="flex-1">
-                      <p
-                        className="text-sm"
-                        style={{ color: "#e2e8f0", fontWeight: 600 }}
-                      >
-                        {label}
-                      </p>
-                      <p
-                        className="text-xs mt-0.5"
-                        style={{ color: "#475569" }}
-                      >
-                        {desc}
-                      </p>
-                    </div>
-                    <ChevronRight size={14} style={{ color: "#475569" }} />
-                  </a>
-                ))}
               </div>
             )}
 

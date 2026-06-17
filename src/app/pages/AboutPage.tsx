@@ -1,212 +1,342 @@
-import { Link } from 'react-router';
-import { Target, Eye, Heart, Shield, Users, Building2, Facebook, Instagram, Twitter, Mail, Phone, MapPin, ChevronRight } from 'lucide-react';
-
-const values = [
-  { icon: Shield, title: 'Transparency', desc: 'Every estate is vetted and verified before listing. We ensure all documentation is legitimate and up-to-date.' },
-  { icon: Heart, title: 'Affordability', desc: 'We believe every Kenyan deserves quality housing. We work with estates across all price ranges.' },
-  { icon: Users, title: 'Community', desc: 'We build communities, not just fill houses. Our estate portal keeps tenants and managers connected.' },
-  { icon: Building2, title: 'Empowerment', desc: 'We empower estate managers with digital tools to run professional, efficient, and transparent operations.' },
-];
-
-const team = [
-  { name: 'Amina Wanjiku', role: 'Chief Executive Officer', initial: 'A' },
-  { name: 'Brian Otieno', role: 'Head of Technology', initial: 'B' },
-  { name: 'Christine Muthoni', role: 'Head of Operations', initial: 'C' },
-  { name: 'David Kipchoge', role: 'Head of Partnerships', initial: 'D' },
-];
+import { Link } from "react-router";
+import { ArrowRight, Heart, Users, Zap, Globe } from "lucide-react";
 
 export default function AboutPage() {
   return (
-    <div>
-      {/* Hero */}
-      <section className="py-24 px-6 text-center" style={{ background: 'linear-gradient(135deg, #040b14, #060d17, #0a1830)' }}>
-        <div className="max-w-3xl mx-auto">
-          <p className="text-sm mb-4" style={{ color: '#3b82f6', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em' }}>About Communest</p>
-          <h1 className="text-white mb-6" style={{ fontWeight: 800, fontSize: 46, letterSpacing: '-1px', lineHeight: 1.15 }}>
-            Transforming How Kenyans<br />
-            <span style={{ background: 'linear-gradient(90deg, #3b82f6, #0ea5e9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              Find & Manage Homes
-            </span>
+    <div style={{ background: "#060d17", minHeight: "100vh" }}>
+      {/* Hero Section */}
+      <div
+        className="py-20 px-6"
+        style={{
+          background: "linear-gradient(135deg, #040b14, #060d17, #0a1830)",
+          borderBottom: "1px solid #1e3a5f",
+        }}
+      >
+        <div className="max-w-4xl mx-auto text-center">
+          <p
+            className="text-sm mb-3"
+            style={{
+              color: "#3b82f6",
+              fontWeight: 600,
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+            }}
+          >
+            About Communest
+          </p>
+          <h1
+            className="text-white mb-4"
+            style={{ fontWeight: 800, fontSize: 44, lineHeight: 1.2 }}
+          >
+            Kenya's Premier Housing Platform
           </h1>
-          <p className="text-lg leading-relaxed" style={{ color: '#94a3b8' }}>
-            Founded in Nairobi, Communest is Kenya's first dedicated platform bridging the gap between house hunters and estate managers — making affordable, quality housing accessible across all 47 counties.
+          <p
+            className="text-lg max-w-2xl mx-auto"
+            style={{ color: "#94a3b8", lineHeight: 1.8 }}
+          >
+            Connecting tenants with quality estates and empowering property
+            managers with modern tools to build thriving residential
+            communities.
           </p>
         </div>
-      </section>
+      </div>
 
-      {/* Mission & Vision */}
-      <section className="py-20 px-6" style={{ background: '#060d17' }}>
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="rounded-3xl p-10" style={{ background: 'linear-gradient(135deg, #0d1a2e, #091220)', border: '1px solid #1e3a5f' }}>
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6" style={{ background: 'rgba(29,111,206,0.15)', border: '1px solid rgba(29,111,206,0.3)' }}>
-              <Target size={26} style={{ color: '#3b82f6' }} />
-            </div>
-            <h2 className="text-white mb-4" style={{ fontWeight: 700, fontSize: 28 }}>Our Mission</h2>
-            <p className="leading-relaxed" style={{ color: '#94a3b8', lineHeight: 1.9 }}>
-              To democratize access to quality housing in Kenya by creating a transparent, efficient, and trusted digital marketplace that connects house hunters with verified residential estates across every county.
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 space-y-20">
+        {/* Mission Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div>
+            <p
+              className="text-sm mb-2"
+              style={{
+                color: "#3b82f6",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+              }}
+            >
+              Our Mission
             </p>
-            <p className="leading-relaxed mt-4" style={{ color: '#94a3b8', lineHeight: 1.9 }}>
-              We believe the process of finding a home should be simple, honest, and stress-free — regardless of your budget or location.
+            <h2
+              className="text-white mb-4"
+              style={{ fontWeight: 800, fontSize: 32 }}
+            >
+              Making Housing Accessible
+            </h2>
+            <p
+              className="text-lg mb-6"
+              style={{ color: "#94a3b8", lineHeight: 1.8 }}
+            >
+              We believe everyone deserves access to quality housing. Communest
+              simplifies the rental process by connecting tenants directly with
+              reputable estates and providing landlords with the tools they need
+              to manage properties efficiently.
+            </p>
+            <p style={{ color: "#64748b", lineHeight: 1.8 }}>
+              Our platform eliminates intermediaries, reduces costs, and creates
+              a transparent, trustworthy ecosystem for the rental housing market
+              in Kenya.
             </p>
           </div>
-          <div className="rounded-3xl p-10" style={{ background: 'linear-gradient(135deg, #0d1a2e, #091220)', border: '1px solid #1e3a5f' }}>
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6" style={{ background: 'rgba(14,165,233,0.12)', border: '1px solid rgba(14,165,233,0.25)' }}>
-              <Eye size={26} style={{ color: '#0ea5e9' }} />
+          <div
+            className="rounded-2xl p-8 h-full"
+            style={{ background: "#0d1a2e", border: "1px solid #1e3a5f" }}
+          >
+            <div className="flex items-center gap-4 mb-6">
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: "rgba(59,130,246,0.15)" }}
+              >
+                <Heart size={24} style={{ color: "#3b82f6" }} />
+              </div>
+              <div>
+                <p className="text-white" style={{ fontWeight: 700 }}>
+                  Trust First
+                </p>
+                <p className="text-sm" style={{ color: "#64748b" }}>
+                  Transparency in every transaction
+                </p>
+              </div>
             </div>
-            <h2 className="text-white mb-4" style={{ fontWeight: 700, fontSize: 28 }}>Our Vision</h2>
-            <p className="leading-relaxed" style={{ color: '#94a3b8', lineHeight: 1.9 }}>
-              To be the most trusted housing platform in East Africa — a place where every Kenyan can find a home they're proud to live in, and where every estate manager can build a thriving, connected community.
-            </p>
-            <p className="leading-relaxed mt-4" style={{ color: '#94a3b8', lineHeight: 1.9 }}>
-              We envision a Kenya where quality housing is not a privilege, but a reality for all.
-            </p>
+            <div className="flex items-center gap-4 mb-6">
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: "rgba(16,185,129,0.15)" }}
+              >
+                <Zap size={24} style={{ color: "#10b981" }} />
+              </div>
+              <div>
+                <p className="text-white" style={{ fontWeight: 700 }}>
+                  Fast & Simple
+                </p>
+                <p className="text-sm" style={{ color: "#64748b" }}>
+                  Find housing in minutes, not months
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: "rgba(245,158,11,0.15)" }}
+              >
+                <Globe size={24} style={{ color: "#f59e0b" }} />
+              </div>
+              <div>
+                <p className="text-white" style={{ fontWeight: 700 }}>
+                  Community
+                </p>
+                <p className="text-sm" style={{ color: "#64748b" }}>
+                  Building better neighborhoods together
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
 
-      {/* Values */}
-      <section className="py-20 px-6" style={{ background: '#04090f' }}>
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-14">
-            <p className="text-sm mb-3" style={{ color: '#3b82f6', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em' }}>What Drives Us</p>
-            <h2 className="text-white" style={{ fontWeight: 700, fontSize: 36 }}>Our Core Values</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="rounded-2xl p-7 transition-all hover:-translate-y-1" style={{ background: '#0d1a2e', border: '1px solid #1e3a5f' }}>
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ background: 'rgba(29,111,206,0.12)', border: '1px solid rgba(29,111,206,0.25)' }}>
-                  <Icon size={22} style={{ color: '#3b82f6' }} />
+        {/* Values Section */}
+        <div>
+          <p
+            className="text-sm mb-3"
+            style={{
+              color: "#3b82f6",
+              fontWeight: 600,
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+            }}
+          >
+            Our Values
+          </p>
+          <h2
+            className="text-white mb-8"
+            style={{ fontWeight: 800, fontSize: 32 }}
+          >
+            What We Stand For
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                icon: Users,
+                title: "User-Centric",
+                desc: "We design every feature with our users' needs at the center.",
+                color: "#3b82f6",
+                bg: "rgba(59,130,246,0.1)",
+              },
+              {
+                icon: Zap,
+                title: "Innovation",
+                desc: "We continuously improve to stay ahead of market needs.",
+                color: "#10b981",
+                bg: "rgba(16,185,129,0.1)",
+              },
+              {
+                icon: Heart,
+                title: "Integrity",
+                desc: "Honesty and fairness guide all our business decisions.",
+                color: "#f59e0b",
+                bg: "rgba(245,158,11,0.1)",
+              },
+            ].map(({ icon: Icon, title, desc, color, bg }) => (
+              <div
+                key={title}
+                className="rounded-2xl p-6"
+                style={{ background: "#0d1a2e", border: "1px solid #1e3a5f" }}
+              >
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+                  style={{ background: bg }}
+                >
+                  <Icon size={24} style={{ color }} />
                 </div>
-                <h3 className="text-white mb-3" style={{ fontWeight: 700 }}>{title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: '#64748b' }}>{desc}</p>
+                <p
+                  className="text-white mb-2"
+                  style={{ fontWeight: 700, fontSize: 18 }}
+                >
+                  {title}
+                </p>
+                <p style={{ color: "#94a3b8", lineHeight: 1.6 }}>{desc}</p>
               </div>
             ))}
           </div>
         </div>
-      </section>
 
-      {/* Stats */}
-      <section className="py-16 px-6" style={{ background: '#060d17' }}>
-        <div className="max-w-4xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-          {[
-            { value: '2022', label: 'Founded' },
-            { value: '120+', label: 'Listed Estates' },
-            { value: '20+', label: 'Counties' },
-            { value: '5,000+', label: 'Happy Tenants' },
-          ].map(({ value, label }) => (
-            <div key={label} className="rounded-2xl p-6" style={{ background: '#0d1a2e', border: '1px solid #1e3a5f' }}>
-              <div className="text-3xl text-white mb-2" style={{ fontWeight: 800, background: 'linear-gradient(90deg, #3b82f6, #0ea5e9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                {value}
-              </div>
-              <div className="text-sm" style={{ color: '#64748b' }}>{label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Team */}
-      <section className="py-20 px-6" style={{ background: '#04090f' }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <p className="text-sm mb-3" style={{ color: '#3b82f6', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Our People</p>
-            <h2 className="text-white" style={{ fontWeight: 700, fontSize: 36 }}>Meet the Team</h2>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {team.map(({ name, role, initial }) => (
-              <div key={name} className="rounded-2xl p-6 text-center" style={{ background: '#0d1a2e', border: '1px solid #1e3a5f' }}>
-                <div className="w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-4" style={{ background: 'linear-gradient(135deg, #1d6fce, #0ea5e9)', fontWeight: 700 }}>
-                  {initial}
-                </div>
-                <h4 className="text-white" style={{ fontWeight: 700 }}>{name}</h4>
-                <p className="text-xs mt-1" style={{ color: '#64748b' }}>{role}</p>
+        {/* Stats Section */}
+        <div
+          className="rounded-2xl p-12"
+          style={{ background: "#0d1a2e", border: "1px solid #1e3a5f" }}
+        >
+          <h2
+            className="text-white mb-12 text-center"
+            style={{ fontWeight: 800, fontSize: 32 }}
+          >
+            By The Numbers
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {[
+              { stat: "50+", label: "Estates" },
+              { stat: "1,000+", label: "Listings" },
+              { stat: "10,000+", label: "Users" },
+              { stat: "98%", label: "Satisfaction" },
+            ].map(({ stat, label }) => (
+              <div key={label} className="text-center">
+                <p
+                  className="text-white mb-2"
+                  style={{ fontWeight: 800, fontSize: 36 }}
+                >
+                  {stat}
+                </p>
+                <p style={{ color: "#94a3b8" }}>{label}</p>
               </div>
             ))}
           </div>
         </div>
-      </section>
 
-      {/* Contact & Socials */}
-      <section className="py-20 px-6" style={{ background: '#060d17' }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <p className="text-sm mb-3" style={{ color: '#3b82f6', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Get in Touch</p>
-            <h2 className="text-white" style={{ fontWeight: 700, fontSize: 36 }}>Contact Communest</h2>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="rounded-2xl p-8" style={{ background: '#0d1a2e', border: '1px solid #1e3a5f' }}>
-              <h3 className="text-white mb-6" style={{ fontWeight: 700 }}>Contact Information</h3>
-              <div className="space-y-5">
-                <div className="flex items-start gap-4">
-                  <MapPin size={18} style={{ color: '#3b82f6', marginTop: 2, flexShrink: 0 }} />
-                  <div>
-                    <p className="text-sm" style={{ color: '#e2e8f0', fontWeight: 500 }}>Headquarters</p>
-                    <p className="text-sm mt-1" style={{ color: '#64748b' }}>Upperhill Business District,<br />Nairobi, Kenya</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Phone size={18} style={{ color: '#3b82f6', flexShrink: 0 }} />
-                  <div>
-                    <p className="text-sm" style={{ color: '#e2e8f0', fontWeight: 500 }}>Phone</p>
-                    <a href="tel:+254700000000" className="text-sm hover:text-blue-400 transition-colors" style={{ color: '#64748b' }}>+254 700 000 000</a>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Mail size={18} style={{ color: '#3b82f6', flexShrink: 0 }} />
-                  <div>
-                    <p className="text-sm" style={{ color: '#e2e8f0', fontWeight: 500 }}>Email</p>
-                    <a href="mailto:hello@communest.co.ke" className="text-sm hover:text-blue-400 transition-colors" style={{ color: '#64748b' }}>hello@communest.co.ke</a>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-8 pt-6" style={{ borderTop: '1px solid #1e3a5f' }}>
-                <p className="text-sm mb-4" style={{ color: '#94a3b8', fontWeight: 500 }}>Follow us on Social Media</p>
-                <div className="flex gap-3">
-                  {[
-                    { Icon: Facebook, label: 'Facebook', hoverBg: '#1877f2' },
-                    { Icon: Instagram, label: 'Instagram', hoverBg: '#e1306c' },
-                    { Icon: Twitter, label: 'X (Twitter)', hoverBg: '#000' },
-                  ].map(({ Icon, label, hoverBg }) => (
-                    <a key={label} href="#" aria-label={label}
-                      className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110"
-                      style={{ background: '#1e3a5f', color: '#94a3b8' }}
-                      onMouseEnter={e => { e.currentTarget.style.background = hoverBg; e.currentTarget.style.color = '#fff'; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = '#1e3a5f'; e.currentTarget.style.color = '#94a3b8'; }}
-                    >
-                      <Icon size={18} />
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </div>
+        {/* CTA Section */}
+        <div
+          className="rounded-2xl p-12 text-center"
+          style={{
+            background: "linear-gradient(135deg, #1d6fce, #0ea5e9)",
+          }}
+        >
+          <h2
+            className="text-white mb-4"
+            style={{ fontWeight: 800, fontSize: 32 }}
+          >
+            Ready to Find Your Dream Home?
+          </h2>
+          <p
+            className="mb-8 max-w-2xl mx-auto"
+            style={{ color: "rgba(255,255,255,0.9)", lineHeight: 1.8 }}
+          >
+            Join thousands of tenants and property managers already using
+            Communest to simplify the housing experience.
+          </p>
+          <Link
+            to="/explore"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-white"
+            style={{
+              background: "rgba(255,255,255,0.2)",
+              border: "1px solid rgba(255,255,255,0.3)",
+              fontWeight: 600,
+              textDecoration: "none",
+              transition: "all 0.3s",
+            }}
+          >
+            Explore Estates <ArrowRight size={18} />
+          </Link>
+        </div>
 
-            <div className="rounded-2xl p-8" style={{ background: '#0d1a2e', border: '1px solid #1e3a5f' }}>
-              <h3 className="text-white mb-6" style={{ fontWeight: 700 }}>Quick Navigation</h3>
-              <div className="space-y-3">
-                {[
-                  { label: 'Explore Estates', to: '/explore', desc: 'Browse all verified estates' },
-                  { label: 'My Estate', to: '/estate', desc: 'Access your estate portal' },
-                  { label: 'List Your Estate', to: '/list-estate', desc: 'Get your estate on Communest' },
-                  { label: 'Sign In / Register', to: '/signin', desc: 'Create or access your account' },
-                  { label: 'Profile', to: '/profile', desc: 'Manage your personal details' },
-                ].map(({ label, to, desc }) => (
-                  <Link key={to} to={to}
-                    className="flex items-center justify-between p-4 rounded-xl transition-colors hover:bg-white/5 group"
-                    style={{ border: '1px solid transparent' }}
-                    onMouseEnter={e => e.currentTarget.style.borderColor = '#1e3a5f'}
-                    onMouseLeave={e => e.currentTarget.style.borderColor = 'transparent'}
-                  >
-                    <div>
-                      <p className="text-sm" style={{ color: '#e2e8f0', fontWeight: 600 }}>{label}</p>
-                      <p className="text-xs mt-0.5" style={{ color: '#64748b' }}>{desc}</p>
-                    </div>
-                    <ChevronRight size={16} style={{ color: '#3b82f6' }} className="group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                ))}
-              </div>
-            </div>
+        {/* Contact Section */}
+        <div className="text-center space-y-6">
+          <h2 className="text-white" style={{ fontWeight: 800, fontSize: 32 }}>
+            Get In Touch
+          </h2>
+          <p style={{ color: "#94a3b8", fontSize: 18, lineHeight: 1.8 }}>
+            Have questions? We'd love to hear from you.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="mailto:support@communest.co.ke"
+              className="px-6 py-3 rounded-xl text-white"
+              style={{
+                background: "#0d1a2e",
+                border: "1px solid #1e3a5f",
+                textDecoration: "none",
+                fontWeight: 600,
+              }}
+            >
+              Email Us
+            </a>
+            <a
+              href="tel:+254700000000"
+              className="px-6 py-3 rounded-xl text-white"
+              style={{
+                background: "linear-gradient(135deg, #1d6fce, #0ea5e9)",
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
+            >
+              Call +254 700 000 000
+            </a>
           </div>
         </div>
-      </section>
+      </div>
+
+      {/* Footer Links */}
+      <div
+        className="py-8 px-6 border-t"
+        style={{ borderColor: "#1e3a5f", background: "#0a0f1a" }}
+      >
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
+          <p style={{ color: "#64748b" }}>
+            © 2026 Communest. All rights reserved.
+          </p>
+          <div className="flex items-center gap-6">
+            <a
+              href="https://facebook.com/communestke"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#3b82f6", textDecoration: "none" }}
+            >
+              Facebook
+            </a>
+            <a
+              href="https://twitter.com/communestke"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#3b82f6", textDecoration: "none" }}
+            >
+              Twitter
+            </a>
+            <a
+              href="https://instagram.com/communest.ke"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#3b82f6", textDecoration: "none" }}
+            >
+              Instagram
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
