@@ -90,18 +90,6 @@ export default function HomePage() {
         />
 
         <div className="relative max-w-7xl mx-auto px-6 py-20 text-center w-full">
-          <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm mb-8"
-            style={{
-              background: "rgba(29,111,206,0.15)",
-              border: "1px solid rgba(29,111,206,0.3)",
-              color: "#3b82f6",
-            }}
-          >
-            <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-            Kenya's Leading Housing Platform
-          </div>
-
           <h1
             className="text-5xl sm:text-6xl lg:text-7xl text-white mb-6"
             style={{ fontWeight: 800, letterSpacing: "-2px", lineHeight: 1.1 }}

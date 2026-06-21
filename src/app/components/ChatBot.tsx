@@ -622,7 +622,7 @@ export default function ChatBot() {
         </div>
       )}
 
-      {/* Toggle button */}
+      {/* Toggle button - CIRCULAR with border-radius: 50% */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="fixed z-50 flex items-center justify-center transition-all hover:scale-110"
@@ -631,7 +631,7 @@ export default function ChatBot() {
           right: 20,
           width: 56,
           height: 56,
-          borderRadius: 16,
+          borderRadius: "50%",
           background: isOpen
             ? "#0d1a2e"
             : "linear-gradient(135deg, #1d6fce, #0ea5e9)",
