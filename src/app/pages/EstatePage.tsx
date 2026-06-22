@@ -158,6 +158,15 @@ type Tab =
   | "inquiries"
   | "manage";
 
+interface PaymentRecord {
+  id: string;
+  month: string;
+  amount: number;
+  method: string;
+  date: string;
+  referenceCode: string;
+}
+
 export default function EstatePage() {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
@@ -201,6 +210,12 @@ export default function EstatePage() {
       details: "Equity Bank: 0123456789, Branch: Kilimani",
       dueDay: 5,
     },
+    {
+      id: "po3",
+      method: "Paystack",
+      details: "Online secure payment via Paystack",
+      dueDay: 5,
+    },
   ]);
   const [showPostPayment, setShowPostPayment] = useState(false);
   const [newPaymentOption, setNewPaymentOption] = useState({
@@ -211,6 +226,13 @@ export default function EstatePage() {
   const [inquiries, setInquiries] = useState(mockInquiries);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyText, setReplyText] = useState("");
+  const [bills, setBills] = useState(mockBills);
+  const [tenantPayments, setTenantPayments] = useState(mockTenantPayments);
+  const [paymentHistory, setPaymentHistory] = useState<PaymentRecord[]>([]);
+  const [showPaystackModal, setShowPaystackModal] = useState(false);
+  const [payingForBill, setPayingForBill] = useState<string | null>(null);
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   // Not signed in
   if (!isAuthenticated) {
@@ -334,7 +356,6 @@ export default function EstatePage() {
       setNewAnnouncement({ title: "", body: "", type: "notice" });
       setShowPostAnnouncement(false);
 
-      // Send emails to all tenants of this estate
       const tenantEmails = getTenantEmailsForEstate(estate!.id);
       if (tenantEmails.length > 0) {
         const emailSent = await sendNotificationEmails({
@@ -441,46 +462,117 @@ export default function EstatePage() {
     }
   };
 
+  const handlePaystackPayment = async () => {
+    if (!payingForBill) return;
+
+    setPaymentProcessing(true);
+
+    // Simulate Paystack payment processing (3 seconds)
+    setTimeout(() => {
+      setPaymentProcessing(false);
+      setPaymentSuccess(true);
+
+      // Generate payment reference
+      const refCode = `PKT-${Date.now().toString().slice(-8)}`;
+
+      // Record payment in history
+      const billData = bills.find((b) => b.month === payingForBill);
+      if (billData) {
+        const newPayment: PaymentRecord = {
+          id: Date.now().toString(),
+          month: payingForBill,
+          amount: billData.total,
+          method: "Paystack",
+          date: new Date().toISOString().split("T")[0],
+          referenceCode: refCode,
+        };
+        setPaymentHistory((prev) => [newPayment, ...prev]);
+
+        // Update bill status to paid
+        setBills((prev) =>
+          prev.map((b) =>
+            b.month === payingForBill ? { ...b, paid: true } : b,
+          ),
+        );
+
+        // Update tenant payment status to confirmed (for admin view)
+        setTenantPayments((prev) =>
+          prev.map((tp) =>
+            tp.month === payingForBill && tp.status === "Pending"
+              ? { ...tp, status: "Confirmed", date: newPayment.date }
+              : tp,
+          ),
+        );
+      }
+
+      // Close modal after 2 seconds
+      setTimeout(() => {
+        setShowPaystackModal(false);
+        setPayingForBill(null);
+        setPaymentSuccess(false);
+      }, 2000);
+    }, 3000);
+  };
+
   const openInquiries = inquiries.filter((i) => !i.reply);
   const resolvedInquiries = inquiries.filter((i) => i.reply);
-  const pendingPayments = mockTenantPayments.filter(
-    (p) => p.status === "Pending",
-  );
+  const pendingPayments = tenantPayments.filter((p) => p.status === "Pending");
 
   return (
     <div style={{ background: "#060d17", minHeight: "100vh" }}>
-      {/* Header */}
+      {/* Estate Photo Banner */}
+      {estate && (
+        <div className="relative h-64 w-full overflow-hidden">
+          <img
+            src={estate.photo}
+            alt={estate.name}
+            className="w-full h-full object-cover"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to bottom, rgba(6,13,23,0) 0%, rgba(6,13,23,0.7) 60%, rgba(6,13,23,1) 100%)",
+            }}
+          />
+          <div className="absolute bottom-0 left-0 right-0 px-6 py-8">
+            <div className="max-w-6xl mx-auto">
+              <p
+                className="text-sm mb-2"
+                style={{
+                  color: "#3b82f6",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                }}
+              >
+                Estate Portal
+              </p>
+              <h1
+                className="text-white mb-1"
+                style={{ fontWeight: 800, fontSize: 32 }}
+              >
+                {estate.name}
+              </h1>
+              <p style={{ color: "#94a3b8" }}>
+                {estate.location} · {estate.county}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Header with badges */}
       <div
-        className="py-10 px-6"
         style={{
           background: "linear-gradient(135deg, #040b14, #060d17, #0a1830)",
           borderBottom: "1px solid #1e3a5f",
         }}
       >
-        <div className="max-w-6xl mx-auto">
-          <p
-            className="text-sm mb-2"
-            style={{
-              color: "#3b82f6",
-              fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-            }}
-          >
-            Estate Portal
-          </p>
-          <h1
-            className="text-white mb-1"
-            style={{ fontWeight: 800, fontSize: 32 }}
-          >
-            {estate?.name}
-          </h1>
-          <p style={{ color: "#64748b" }}>
-            {estate?.location} · {estate?.county}
-          </p>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
           {rentedHouse && (
             <div
-              className="inline-flex items-center gap-2 mt-3 px-3 py-1.5 rounded-full"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full"
               style={{
                 background: "rgba(16,185,129,0.1)",
                 border: "1px solid rgba(16,185,129,0.3)",
@@ -638,9 +730,8 @@ export default function EstatePage() {
                       style={{ color: "#e2e8f0", fontWeight: 600 }}
                     >
                       {
-                        mockTenantPayments.filter(
-                          (p) => p.status === "Confirmed",
-                        ).length
+                        tenantPayments.filter((p) => p.status === "Confirmed")
+                          .length
                       }{" "}
                       confirmed this month
                     </p>
@@ -663,7 +754,7 @@ export default function EstatePage() {
                       Next due: June 5, 2026
                     </p>
                     <p className="text-xs" style={{ color: "#64748b" }}>
-                      KES {mockBills[0].total.toLocaleString()}
+                      KES {bills[0]?.total.toLocaleString()}
                     </p>
                   </>
                 )}
@@ -1203,7 +1294,7 @@ export default function EstatePage() {
                     Tenant Payment Notifications
                   </h3>
                   <div className="space-y-3">
-                    {mockTenantPayments.map((tp) => (
+                    {tenantPayments.map((tp) => (
                       <div
                         key={tp.id}
                         className="rounded-2xl p-5 flex items-center justify-between gap-4"
@@ -1257,6 +1348,76 @@ export default function EstatePage() {
                     ))}
                   </div>
                 </div>
+
+                {/* Payment History */}
+                {paymentHistory.length > 0 && (
+                  <div>
+                    <h3
+                      className="text-white mb-4"
+                      style={{ fontWeight: 700, fontSize: 18 }}
+                    >
+                      Payment History
+                    </h3>
+                    <div className="space-y-3">
+                      {paymentHistory.map((payment) => (
+                        <div
+                          key={payment.id}
+                          className="rounded-2xl p-5 flex items-center justify-between gap-4"
+                          style={{
+                            background: "#0d1a2e",
+                            border: "1px solid #1e3a5f",
+                          }}
+                        >
+                          <div className="flex items-center gap-4">
+                            <div
+                              className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                              style={{
+                                background: "rgba(16,185,129,0.1)",
+                              }}
+                            >
+                              <CheckCircle2
+                                size={18}
+                                style={{ color: "#10b981" }}
+                              />
+                            </div>
+                            <div>
+                              <p
+                                className="text-sm"
+                                style={{ color: "#e2e8f0", fontWeight: 600 }}
+                              >
+                                {payment.month}
+                              </p>
+                              <p
+                                className="text-xs mt-0.5"
+                                style={{ color: "#64748b" }}
+                              >
+                                KES {payment.amount.toLocaleString()} ·{" "}
+                                {payment.method} · {payment.date}
+                              </p>
+                              <p
+                                className="text-xs mt-1"
+                                style={{ color: "#475569" }}
+                              >
+                                Ref: {payment.referenceCode}
+                              </p>
+                            </div>
+                          </div>
+                          <span
+                            className="px-3 py-1 rounded-full text-xs flex-shrink-0"
+                            style={{
+                              background: "rgba(16,185,129,0.12)",
+                              color: "#10b981",
+                              border: "1px solid rgba(16,185,129,0.3)",
+                              fontWeight: 600,
+                            }}
+                          >
+                            Confirmed
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Post Payment Option modal */}
                 {showPostPayment && (
@@ -1424,7 +1585,8 @@ export default function EstatePage() {
                     ))}
                   </div>
                 </div>
-                {mockBills.map((bill) => (
+
+                {bills.map((bill) => (
                   <div
                     key={bill.month}
                     className="rounded-2xl p-6"
@@ -1497,6 +1659,10 @@ export default function EstatePage() {
                       </div>
                       {!bill.paid && (
                         <button
+                          onClick={() => {
+                            setPayingForBill(bill.month);
+                            setShowPaystackModal(true);
+                          }}
                           className="px-5 py-2.5 rounded-xl text-sm text-white transition-all hover:opacity-90"
                           style={{
                             background:
@@ -1510,6 +1676,62 @@ export default function EstatePage() {
                     </div>
                   </div>
                 ))}
+
+                {/* Payment History */}
+                {paymentHistory.length > 0 && (
+                  <div
+                    className="rounded-2xl p-6"
+                    style={{
+                      background: "#0d1a2e",
+                      border: "1px solid #1e3a5f",
+                    }}
+                  >
+                    <h3 className="text-white mb-4" style={{ fontWeight: 700 }}>
+                      Payment History
+                    </h3>
+                    <div className="space-y-3">
+                      {paymentHistory.map((payment) => (
+                        <div
+                          key={payment.id}
+                          className="flex items-center justify-between p-4 rounded-lg"
+                          style={{ background: "#060d17" }}
+                        >
+                          <div>
+                            <p
+                              className="text-sm"
+                              style={{ color: "#e2e8f0", fontWeight: 600 }}
+                            >
+                              {payment.month}
+                            </p>
+                            <p
+                              className="text-xs mt-1"
+                              style={{ color: "#64748b" }}
+                            >
+                              {payment.method} · {payment.date}
+                            </p>
+                            <p className="text-xs" style={{ color: "#475569" }}>
+                              Ref: {payment.referenceCode}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p
+                              className="text-sm"
+                              style={{ color: "#10b981", fontWeight: 700 }}
+                            >
+                              KES {payment.amount.toLocaleString()}
+                            </p>
+                            <p
+                              className="text-xs mt-1"
+                              style={{ color: "#10b981" }}
+                            >
+                              ✓ Paid
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -1957,6 +2179,158 @@ export default function EstatePage() {
           </div>
         )}
       </div>
+
+      {/* Paystack Payment Modal */}
+      {showPaystackModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center px-4"
+          style={{
+            background: "rgba(0,0,0,0.7)",
+            backdropFilter: "blur(4px)",
+          }}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl p-8"
+            style={{
+              background: "#0d1a2e",
+              border: "1px solid #1e3a5f",
+            }}
+          >
+            {paymentSuccess ? (
+              <div className="text-center">
+                <div className="mb-4">
+                  <CheckCircle2
+                    size={56}
+                    style={{ color: "#10b981", margin: "0 auto" }}
+                  />
+                </div>
+                <h3
+                  className="text-white mb-2"
+                  style={{ fontWeight: 700, fontSize: 20 }}
+                >
+                  Payment Successful!
+                </h3>
+                <p className="text-sm mb-4" style={{ color: "#64748b" }}>
+                  Your payment has been confirmed and processed.
+                </p>
+                <div
+                  className="p-4 rounded-xl mb-4"
+                  style={{ background: "#060d17" }}
+                >
+                  <p className="text-xs mb-2" style={{ color: "#475569" }}>
+                    Bill Month
+                  </p>
+                  <p
+                    className="text-sm"
+                    style={{ color: "#e2e8f0", fontWeight: 600 }}
+                  >
+                    {payingForBill}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between mb-6">
+                  <h3
+                    className="text-white"
+                    style={{ fontWeight: 700, fontSize: 20 }}
+                  >
+                    Pay with Paystack
+                  </h3>
+                  <button
+                    onClick={() => {
+                      setShowPaystackModal(false);
+                      setPayingForBill(null);
+                      setPaymentSuccess(false);
+                    }}
+                    disabled={paymentProcessing}
+                    className="text-slate-500 hover:text-white"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <div
+                  className="p-4 rounded-xl mb-6"
+                  style={{ background: "#060d17" }}
+                >
+                  <p className="text-xs mb-2" style={{ color: "#475569" }}>
+                    Bill Month
+                  </p>
+                  <p
+                    className="text-sm mb-4"
+                    style={{ color: "#e2e8f0", fontWeight: 600 }}
+                  >
+                    {payingForBill}
+                  </p>
+                  <div
+                    style={{ borderTop: "1px solid #1e3a5f", paddingTop: 12 }}
+                  >
+                    <p className="text-xs mb-1" style={{ color: "#475569" }}>
+                      Amount to Pay
+                    </p>
+                    <p
+                      style={{
+                        color: "#10b981",
+                        fontWeight: 800,
+                        fontSize: 20,
+                      }}
+                    >
+                      KES{" "}
+                      {bills
+                        .find((b) => b.month === payingForBill)
+                        ?.total.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  className="text-center text-xs mb-4"
+                  style={{ color: "#64748b" }}
+                >
+                  {paymentProcessing ? (
+                    <div>
+                      <p className="mb-2">Processing payment...</p>
+                      <div
+                        className="w-8 h-8 border-2 border-transparent border-t-blue-500 rounded-full mx-auto animate-spin"
+                        style={{
+                          borderTopColor: "#3b82f6",
+                          animation: "spin 1s linear infinite",
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    "Click below to proceed with payment"
+                  )}
+                </div>
+
+                <button
+                  onClick={handlePaystackPayment}
+                  disabled={paymentProcessing}
+                  className="w-full py-3 rounded-xl text-white text-sm transition-all hover:opacity-90 disabled:opacity-50"
+                  style={{
+                    background: paymentProcessing
+                      ? "#1e3a5f"
+                      : "linear-gradient(135deg, #1d6fce, #0ea5e9)",
+                    fontWeight: 600,
+                  }}
+                >
+                  {paymentProcessing
+                    ? "Processing..."
+                    : "Complete Payment via Paystack"}
+                </button>
+                <p
+                  className="text-xs text-center mt-4"
+                  style={{ color: "#475569" }}
+                >
+                  This is a mock payment system. Your payment will be confirmed
+                  after 3 seconds.
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
