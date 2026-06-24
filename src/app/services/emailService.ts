@@ -1,4 +1,4 @@
-// emailService.ts - Extended with super-admin approval system emails
+// emailService.ts - Extended with email verification system
 
 export interface EmailData {
   estateId: string;
@@ -8,6 +8,223 @@ export interface EmailData {
   notificationBody: string;
   notificationType: string;
 }
+
+export interface VerificationEmailData {
+  email: string;
+  verificationCode: string;
+}
+
+export const sendVerificationCodeEmail = async (
+  data: VerificationEmailData,
+): Promise<boolean> => {
+  try {
+    console.log("Sending verification code email...", data);
+
+    const emailContent = {
+      to_email: data.email,
+      verification_code: data.verificationCode,
+      code_expiry: "10 minutes",
+      subject: "Verify Your Communest Account - 4-Digit Code",
+      message: `Hello,
+
+Welcome to Communest! To complete your registration, please verify your email address.
+
+Your verification code is:
+
+${data.verificationCode}
+
+This code will expire in 10 minutes.
+
+If you didn't create this account, please ignore this email.
+
+Best regards,
+Communest Team`,
+      sent_at: new Date().toLocaleString(),
+    };
+
+    console.log("Verification email content:", emailContent);
+    // Simulate email sending delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    console.log(
+      `✓ Verification code sent to ${data.email}: ${data.verificationCode}`,
+    );
+    return true;
+  } catch (error) {
+    console.error("Error sending verification email:", error);
+    return false;
+  }
+};
+
+export interface SuspiciousLoginEmailData {
+  email: string;
+  failedAttempts: number;
+  ipAddress?: string;
+  deviceInfo?: string;
+  timestamp: string;
+}
+
+export const sendSuspiciousActivityEmail = async (
+  data: SuspiciousLoginEmailData,
+): Promise<boolean> => {
+  try {
+    console.log("Sending suspicious activity alert...", data);
+
+    const emailContent = {
+      to_email: data.email,
+      failed_attempts: data.failedAttempts,
+      device_info: data.deviceInfo || "Unknown Device",
+      timestamp: data.timestamp,
+      subject: "Suspicious Login Activity on Your Communest Account",
+      message: `Hello,
+
+We detected suspicious login activity on your Communest account.
+
+Failed Login Attempts: ${data.failedAttempts}
+Device: ${data.deviceInfo || "Unknown"}
+Time: ${data.timestamp}
+
+IMPORTANT: If you made these attempts, you can ignore this email.
+
+If you did NOT attempt to log in:
+1. Change your password immediately
+2. Enable two-factor authentication (when available)
+3. Contact our support team at support@communest.co.ke
+
+Account Security Status:
+Your account will be automatically locked after 5 failed attempts for 2 hours.
+
+Do not share your password with anyone.
+
+Best regards,
+Communest Security Team`,
+      sent_at: new Date().toLocaleString(),
+    };
+
+    console.log("Suspicious activity email content:", emailContent);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    console.log(`✓ Suspicious activity alert sent to ${data.email}`);
+    return true;
+  } catch (error) {
+    console.error("Error sending suspicious activity email:", error);
+    return false;
+  }
+};
+
+export interface NewDeviceLoginEmailData {
+  email: string;
+  deviceInfo: string;
+  timestamp: string;
+  ipAddress?: string;
+}
+
+export const sendNewDeviceLoginEmail = async (
+  data: NewDeviceLoginEmailData,
+): Promise<boolean> => {
+  try {
+    console.log("Sending new device login notification...", data);
+
+    const emailContent = {
+      to_email: data.email,
+      device_info: data.deviceInfo,
+      timestamp: data.timestamp,
+      ip_address: data.ipAddress || "Unknown",
+      subject: "New Device Login to Your Communest Account",
+      message: `Hello,
+
+We detected a login to your Communest account from a new device.
+
+Device Information:
+${data.deviceInfo}
+
+Time: ${data.timestamp}
+IP Address: ${data.ipAddress || "Unknown"}
+
+IMPORTANT: If this was you, you can ignore this email and mark this device as trusted.
+
+If you did NOT log in from this device:
+1. Change your password immediately at https://irammadj.github.io/FrontendCommunest/
+2. Check your account activity
+3. Contact us at support@communest.co.ke if you need help
+
+How We Protect Your Account:
+- We monitor login attempts from new devices
+- We track suspicious activity patterns
+- We notify you of all security-related changes
+
+Stay safe!
+
+Best regards,
+Communest Security Team`,
+      sent_at: new Date().toLocaleString(),
+    };
+
+    console.log("New device login email content:", emailContent);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    console.log(`✓ New device login notification sent to ${data.email}`);
+    return true;
+  } catch (error) {
+    console.error("Error sending new device login email:", error);
+    return false;
+  }
+};
+
+export interface AccountLockedEmailData {
+  email: string;
+  failedAttempts: number;
+  lockoutDuration: string;
+  unlockTime: string;
+}
+
+export const sendAccountLockedEmail = async (
+  data: AccountLockedEmailData,
+): Promise<boolean> => {
+  try {
+    console.log("Sending account locked notification...", data);
+
+    const emailContent = {
+      to_email: data.email,
+      failed_attempts: data.failedAttempts,
+      lockout_duration: data.lockoutDuration,
+      unlock_time: data.unlockTime,
+      subject: "Your Communest Account Has Been Locked",
+      message: `Hello,
+
+Your Communest account has been temporarily locked due to too many failed login attempts.
+
+Details:
+Failed Attempts: ${data.failedAttempts}
+Lockout Duration: ${data.lockoutDuration}
+Your account will be unlocked at: ${data.unlockTime}
+
+This is a security measure to protect your account from unauthorized access.
+
+What You Should Do:
+1. Wait ${data.lockoutDuration} before trying again
+2. Make sure you use the correct password
+3. If you forgot your password, contact support@communest.co.ke
+
+Remember: Never share your password with anyone.
+
+Your account security is our top priority.
+
+Best regards,
+Communest Security Team`,
+      sent_at: new Date().toLocaleString(),
+    };
+
+    console.log("Account locked email content:", emailContent);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    console.log(`✓ Account locked notification sent to ${data.email}`);
+    return true;
+  } catch (error) {
+    console.error("Error sending account locked email:", error);
+    return false;
+  }
+};
 
 export const sendNotificationEmails = async (
   data: EmailData,

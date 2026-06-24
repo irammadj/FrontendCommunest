@@ -12,6 +12,7 @@ import {
   X,
   CheckCircle2,
   Edit3,
+  AlertCircle,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { mockHouses, mockEstates } from "../data/mockData";
@@ -380,7 +381,7 @@ export default function ProfilePage() {
               )}
             </div>
 
-            {/* Email */}
+            {/* Email with Verification Badge */}
             <div className="px-7 py-5">
               {editMode === "email" ? (
                 <div>
@@ -441,21 +442,49 @@ export default function ProfilePage() {
                 </div>
               ) : (
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 flex-1">
                     <Mail size={16} style={{ color: "#3b82f6" }} />
-                    <div>
+                    <div className="flex-1">
                       <p
                         className="text-xs mb-0.5"
                         style={{ color: "#475569" }}
                       >
                         Email Address
                       </p>
-                      <p
-                        className="text-sm"
-                        style={{ color: "#e2e8f0", fontWeight: 600 }}
-                      >
-                        {user.email}
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <p
+                          className="text-sm"
+                          style={{ color: "#e2e8f0", fontWeight: 600 }}
+                        >
+                          {user.email}
+                        </p>
+                        {/* Email Verification Badge */}
+                        {user.emailVerified ? (
+                          <span
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs"
+                            style={{
+                              background: "rgba(16,185,129,0.1)",
+                              color: "#10b981",
+                              border: "1px solid rgba(16,185,129,0.3)",
+                              fontWeight: 600,
+                            }}
+                          >
+                            <CheckCircle2 size={12} /> Verified
+                          </span>
+                        ) : (
+                          <span
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs"
+                            style={{
+                              background: "rgba(249,115,22,0.1)",
+                              color: "#f59e0b",
+                              border: "1px solid rgba(249,115,22,0.3)",
+                              fontWeight: 600,
+                            }}
+                          >
+                            <AlertCircle size={12} /> Not Verified
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <button
@@ -463,7 +492,7 @@ export default function ProfilePage() {
                       setEditMode("email");
                       setEditEmail(user.email);
                     }}
-                    className="flex items-center gap-1.5 text-xs hover:text-blue-400 transition-colors"
+                    className="flex items-center gap-1.5 text-xs hover:text-blue-400 transition-colors flex-shrink-0"
                     style={{ color: "#3b82f6", fontWeight: 500 }}
                   >
                     <Edit3 size={13} /> Edit
