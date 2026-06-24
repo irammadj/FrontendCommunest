@@ -10,6 +10,9 @@ import ListEstatePage from "./pages/ListEstatePage";
 import ProfilePage from "./pages/ProfilePage";
 import SignInPage from "./pages/SignInPage";
 import CommunestAdminDashboard from "./pages/CommunestAdminDashboard";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import TermsOfServicePage from "./pages/TermsOfServicePage";
+import CookiePolicyPage from "./pages/CookiePolicyPage";
 
 export const router = createBrowserRouter(
   [
@@ -30,6 +33,9 @@ export const router = createBrowserRouter(
         { path: "profile", Component: ProfilePage },
         { path: "signin", Component: SignInPage },
         { path: "communest-admin", Component: CommunestAdminDashboard },
+        { path: "privacy-policy", Component: PrivacyPolicyPage },
+        { path: "terms-of-service", Component: TermsOfServicePage },
+        { path: "cookie-policy", Component: CookiePolicyPage },
       ],
     },
   ],
