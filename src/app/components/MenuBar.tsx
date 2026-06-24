@@ -8,6 +8,7 @@ import {
   PlusSquare,
   User,
   LogOut,
+  Settings,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { motion, AnimatePresence } from "motion/react";
@@ -17,19 +18,6 @@ interface MenuBarProps {
   onClose: () => void;
 }
 
-const navItems = [
-  { label: "Home", to: "/", icon: Home },
-  { label: "Explore", to: "/explore", icon: Search },
-  { label: "My Estate", to: "/estate", icon: Building2, hideSuperAdmin: true },
-  { label: "About", to: "/about", icon: Info },
-  {
-    label: "List Your Estate",
-    to: "/list-estate",
-    icon: PlusSquare,
-    hideSuperAdmin: true,
-  },
-];
-
 export function MenuBar({ open, onClose }: MenuBarProps) {
   const location = useLocation();
   const { user, isAuthenticated, signOut } = useAuth();
@@ -38,6 +26,30 @@ export function MenuBar({ open, onClose }: MenuBarProps) {
     signOut();
     onClose();
   };
+
+  // Base navigation items (always visible)
+  const baseNavItems = [
+    { label: "Home", to: "/", icon: Home },
+    { label: "Explore", to: "/explore", icon: Search },
+    { label: "About", to: "/about", icon: Info },
+  ];
+
+  // Auth-only navigation items (only show if authenticated AND not super-admin)
+  const authNavItems =
+    isAuthenticated && !user?.isSuperAdmin
+      ? [
+          { label: "My Estate", to: "/estate", icon: Building2 },
+          { label: "List Your Estate", to: "/list-estate", icon: PlusSquare },
+        ]
+      : [];
+
+  // Combine all navigation items (Home, Explore, Auth Items, About)
+  const navItems = [
+    baseNavItems[0], // Home
+    baseNavItems[1], // Explore
+    ...authNavItems, // My Estate, List Your Estate (if authenticated)
+    baseNavItems[2], // About
+  ];
 
   return (
     <AnimatePresence>
@@ -113,11 +125,6 @@ export function MenuBar({ open, onClose }: MenuBarProps) {
                 Navigation
               </p>
               {navItems.map((item) => {
-                // Skip items marked for super-admin hiding if user is super-admin
-                if (item.hideSuperAdmin && user?.isSuperAdmin) {
-                  return null;
-                }
-
                 const Icon = item.icon;
                 const isActive = location.pathname === item.to;
                 return (
@@ -142,6 +149,36 @@ export function MenuBar({ open, onClose }: MenuBarProps) {
                   </Link>
                 );
               })}
+
+              {/* Super Admin Section */}
+              {isAuthenticated && user?.isSuperAdmin && (
+                <>
+                  <p
+                    className="text-xs px-3 mt-6 mb-3"
+                    style={{
+                      color: "#475569",
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.08em",
+                    }}
+                  >
+                    Admin
+                  </p>
+                  <Link
+                    to="/communest-admin"
+                    onClick={onClose}
+                    className="flex items-center gap-3 px-3 py-3 rounded-xl mb-1 transition-all"
+                    style={{
+                      background: "rgba(239,68,68,0.1)",
+                      color: "#ef4444",
+                      border: "1px solid rgba(239,68,68,0.2)",
+                    }}
+                  >
+                    <Settings size={18} />
+                    <span>Admin Dashboard</span>
+                  </Link>
+                </>
+              )}
             </nav>
 
             {/* Profile bottom */}

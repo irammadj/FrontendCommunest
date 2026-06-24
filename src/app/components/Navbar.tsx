@@ -49,23 +49,44 @@ export function Navbar({ onMenuOpen }: NavbarProps) {
 
         {/* Center: desktop nav */}
         <nav className="hidden lg:flex items-center gap-1">
-          {[
-            { label: "Home", to: "/" },
-            { label: "Explore", to: "/explore" },
-            !user?.isSuperAdmin && { label: "My Estate", to: "/estate" },
-            { label: "About", to: "/about" },
-          ]
-            .filter(Boolean)
-            .map((link: any) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className="px-4 py-2 rounded-lg text-sm transition-colors hover:text-white hover:bg-white/5"
-                style={{ color: "#94a3b8", fontWeight: 500 }}
-              >
-                {link.label}
-              </Link>
-            ))}
+          {/* Home Link */}
+          <Link
+            to="/"
+            className="px-4 py-2 rounded-lg text-sm transition-colors hover:text-white hover:bg-white/5"
+            style={{ color: "#94a3b8", fontWeight: 500 }}
+          >
+            Home
+          </Link>
+
+          {/* Explore Link */}
+          <Link
+            to="/explore"
+            className="px-4 py-2 rounded-lg text-sm transition-colors hover:text-white hover:bg-white/5"
+            style={{ color: "#94a3b8", fontWeight: 500 }}
+          >
+            Explore
+          </Link>
+
+          {/* My Estate - Only show if authenticated AND not super-admin */}
+          {isAuthenticated && !user?.isSuperAdmin && (
+            <Link
+              to="/estate"
+              className="px-4 py-2 rounded-lg text-sm transition-colors hover:text-white hover:bg-white/5"
+              style={{ color: "#94a3b8", fontWeight: 500 }}
+            >
+              My Estate
+            </Link>
+          )}
+
+          {/* About Link */}
+          <Link
+            to="/about"
+            className="px-4 py-2 rounded-lg text-sm transition-colors hover:text-white hover:bg-white/5"
+            style={{ color: "#94a3b8", fontWeight: 500 }}
+          >
+            About
+          </Link>
+
           {/* Super Admin Link - Only show for super admin */}
           {isAuthenticated && user?.isSuperAdmin && (
             <Link
