@@ -11,8 +11,6 @@ import {
   CheckCircle2,
   AlertCircle,
   Clock,
-  Smartphone,
-  X,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
@@ -39,7 +37,6 @@ export default function SignInPage() {
   const [verificationEmail, setVerificationEmail] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [resendCountdown, setResendCountdown] = useState(0);
-  const [showDeviceModal, setShowDeviceModal] = useState(false);
   const [lockoutTime, setLockoutTime] = useState(0);
   const [passwordStrength, setPasswordStrength] = useState({
     minLength: false,
@@ -140,12 +137,12 @@ export default function SignInPage() {
 
       const result = signIn(form.email, form.password);
       if (result.success) {
+        // Auto-trust device if new (without showing modal)
         if (result.message === "new_device") {
-          // Show device verification modal
-          setShowDeviceModal(true);
-        } else {
-          navigate("/explore");
+          trustDevice(form.email);
         }
+        // Redirect to explore immediately after successful login
+        navigate("/explore");
       } else {
         setError(result.message);
       }
@@ -186,6 +183,7 @@ export default function SignInPage() {
       if (verifyEmailCode(verificationEmail, verificationCode)) {
         setError("");
         setVerificationCode("");
+        // Redirect to explore after email verification
         navigate("/explore");
       } else {
         setError("Invalid or expired verification code");
@@ -201,14 +199,6 @@ export default function SignInPage() {
     } else {
       setError(result.message);
     }
-  };
-
-  const handleDeviceVerification = () => {
-    // In a real app, you'd send a verification code here
-    // For now, we'll trust the device and proceed
-    trustDevice(form.email);
-    setShowDeviceModal(false);
-    navigate("/explore");
   };
 
   // Sign In Mode
@@ -429,89 +419,6 @@ export default function SignInPage() {
             </a>
           </p>
         </div>
-
-        {/* Device Detection Modal */}
-        {showDeviceModal && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center px-4"
-            style={{
-              background: "rgba(0,0,0,0.75)",
-              backdropFilter: "blur(4px)",
-            }}
-          >
-            <div
-              className="w-full max-w-sm rounded-2xl p-8"
-              style={{
-                background: "#0d1a2e",
-                border: "1px solid rgba(29,111,206,0.3)",
-              }}
-            >
-              <div
-                className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-5"
-                style={{
-                  background: "rgba(29,111,206,0.1)",
-                  border: "2px solid rgba(29,111,206,0.3)",
-                }}
-              >
-                <Smartphone size={24} style={{ color: "#3b82f6" }} />
-              </div>
-              <h3
-                className="text-white mb-2 text-center"
-                style={{ fontWeight: 800, fontSize: 22 }}
-              >
-                New Device Login
-              </h3>
-              <p
-                className="text-sm mb-6 text-center leading-relaxed"
-                style={{ color: "#94a3b8", lineHeight: 1.8 }}
-              >
-                We detected a login from a new device. For security, please
-                verify this device.
-              </p>
-              <div
-                className="p-4 rounded-xl mb-6"
-                style={{
-                  background: "rgba(29,111,206,0.06)",
-                  border: "1px solid rgba(29,111,206,0.2)",
-                }}
-              >
-                <p
-                  className="text-xs mb-2"
-                  style={{ color: "#475569", fontWeight: 600 }}
-                >
-                  Device Info:
-                </p>
-                <p className="text-xs" style={{ color: "#94a3b8" }}>
-                  Browser: {navigator.userAgent.substring(0, 50)}...
-                </p>
-              </div>
-              <button
-                onClick={handleDeviceVerification}
-                className="w-full py-3 rounded-xl text-white transition-all hover:opacity-90 mb-3"
-                style={{
-                  background: "linear-gradient(135deg, #1d6fce, #0ea5e9)",
-                  fontWeight: 700,
-                }}
-              >
-                Trust This Device
-              </button>
-              <button
-                onClick={() => {
-                  setShowDeviceModal(false);
-                  setForm({ name: "", email: "", password: "" });
-                }}
-                className="w-full py-3 rounded-xl transition-colors hover:bg-white/5"
-                style={{
-                  border: "1px solid #1e3a5f",
-                  color: "#94a3b8",
-                  fontWeight: 600,
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     );
   }

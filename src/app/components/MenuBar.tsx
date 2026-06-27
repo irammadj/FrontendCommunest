@@ -43,13 +43,13 @@ export function MenuBar({ open, onClose }: MenuBarProps) {
 
   // Auth-only navigation items (only show if authenticated AND not super-admin)
   // "My Estate" shows for all authenticated non-super-admin users
-  // "List Your Estate" shows ONLY for estate admins (not for tenants)
+  // "List Your Estate" shows for regular users and estate admins (NOT for tenants)
   const authNavItems =
     isAuthenticated && !user?.isSuperAdmin
       ? [
           { label: "My Estate", to: "/estate", icon: Building2 },
-          // Only show "List Your Estate" for estate admins, NOT for tenants
-          ...(user?.isAdmin && !isTenant
+          // Show "List Your Estate" for regular users and estate admins, NOT for tenants
+          ...(!isTenant
             ? [
                 {
                   label: "List Your Estate",
@@ -65,7 +65,7 @@ export function MenuBar({ open, onClose }: MenuBarProps) {
   const navItems = [
     baseNavItems[0], // Home
     baseNavItems[1], // Explore
-    ...authNavItems, // My Estate, List Your Estate (if admin)
+    ...authNavItems, // My Estate, List Your Estate (if not tenant)
     baseNavItems[2], // About
   ];
 
