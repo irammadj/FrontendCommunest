@@ -105,7 +105,6 @@ export default function ListEstatePage() {
     e.preventDefault();
     if (!validate()) return;
 
-    // Create pending estate object
     const pendingEstate = {
       id: `estate_${Date.now()}`,
       name: form.name,
@@ -123,7 +122,6 @@ export default function ListEstatePage() {
       submittedDate: new Date().toISOString().split("T")[0],
     };
 
-    // Save to pending estates in localStorage
     const pendingEstates = JSON.parse(
       localStorage.getItem("communest_pending_estates") || "[]",
     );
@@ -133,7 +131,6 @@ export default function ListEstatePage() {
       JSON.stringify(pendingEstates),
     );
 
-    // Send confirmation email to estate manager
     await sendSubmissionConfirmationEmail({
       estateName: form.name,
       estateEmail: form.email,
@@ -141,7 +138,6 @@ export default function ListEstatePage() {
       submissionDate: pendingEstate.submittedDate,
     });
 
-    // Send notification to super-admin
     await sendNewEstateNotificationToAdmin({
       estateName: form.name,
       estateEmail: form.email,
@@ -281,37 +277,52 @@ export default function ListEstatePage() {
 
   return (
     <div style={{ background: "#060d17", minHeight: "100vh" }}>
-      {/* Header */}
+      {/* Hero with Background Image */}
       <div
-        className="py-14 px-6 text-center"
+        className="py-14 px-6 text-center relative overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, #040b14, #060d17, #0a1830)",
+          backgroundImage: "url(/FrontendCommunest/assets/estate-hero-bg.png)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          // backgroundAttachment: "fixed" removed — causes image to not render in many browsers
         }}
       >
-        <p
-          className="text-sm mb-3"
+        {/* Dark overlay for readability */}
+        <div
+          className="absolute inset-0"
           style={{
-            color: "#3b82f6",
-            fontWeight: 600,
-            textTransform: "uppercase",
-            letterSpacing: "0.1em",
+            background:
+              "linear-gradient(180deg, rgba(6,13,23,0.75) 0%, rgba(6,13,23,0.85) 100%)",
           }}
-        >
-          Estate Managers
-        </p>
-        <h1
-          className="text-white mb-4"
-          style={{ fontWeight: 800, fontSize: 40, letterSpacing: "-1px" }}
-        >
-          List Your Estate
-        </h1>
-        <p
-          className="max-w-md mx-auto"
-          style={{ color: "#64748b", lineHeight: 1.8 }}
-        >
-          Fill in the details below to submit your estate for review and
-          approval on Communest.
-        </p>
+        />
+
+        {/* Content */}
+        <div className="relative z-10">
+          <p
+            className="text-sm mb-3"
+            style={{
+              color: "#3b82f6",
+              fontWeight: 600,
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+            }}
+          >
+            Estate Managers
+          </p>
+          <h1
+            className="text-white mb-4"
+            style={{ fontWeight: 800, fontSize: 40, letterSpacing: "-1px" }}
+          >
+            List Your Estate
+          </h1>
+          <p
+            className="max-w-md mx-auto"
+            style={{ color: "#64748b", lineHeight: 1.8 }}
+          >
+            Fill in the details below to submit your estate for review and
+            approval on Communest.
+          </p>
+        </div>
       </div>
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12">

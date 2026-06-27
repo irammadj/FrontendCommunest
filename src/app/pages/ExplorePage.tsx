@@ -55,56 +55,70 @@ export default function ExplorePage() {
 
   return (
     <div style={{ background: "#060d17", minHeight: "100vh" }}>
-      {/* Header */}
+      {/* Hero with Background Image */}
       <div
-        className="py-14 px-6 text-center"
+        className="py-14 px-6 text-center relative overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, #040b14, #060d17, #0a1830)",
+          backgroundImage: "url(/FrontendCommunest/assets/estate-hero-bg.png)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
-        <p
-          className="text-sm mb-3"
+        {/* Dark overlay for readability */}
+        <div
+          className="absolute inset-0"
           style={{
-            color: "#3b82f6",
-            fontWeight: 600,
-            textTransform: "uppercase",
-            letterSpacing: "0.1em",
+            background:
+              "linear-gradient(180deg, rgba(6,13,23,0.75) 0%, rgba(6,13,23,0.85) 100%)",
           }}
-        >
-          Browse Listings
-        </p>
-        <h1
-          className="text-white mb-4"
-          style={{ fontWeight: 800, fontSize: 40, letterSpacing: "-1px" }}
-        >
-          Explore Estates
-        </h1>
-        <p
-          className="mb-8"
-          style={{ color: "#64748b", maxWidth: 480, margin: "0 auto 32px" }}
-        >
-          Discover verified residential estates across Kenya. Filter by county
-          or price to find your perfect neighbourhood.
-        </p>
-        {/* Search */}
-        <div className="relative max-w-md mx-auto">
-          <Search
-            size={18}
-            className="absolute left-4 top-1/2 -translate-y-1/2"
-            style={{ color: "#64748b" }}
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by estate or location…"
-            className="w-full pl-12 pr-4 py-3.5 rounded-xl text-sm outline-none"
+        />
+
+        {/* Content */}
+        <div className="relative z-10">
+          <p
+            className="text-sm mb-3"
             style={{
-              background: "#0d1a2e",
-              border: "1px solid #1e3a5f",
-              color: "#e2e8f0",
+              color: "#3b82f6",
+              fontWeight: 600,
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
             }}
-          />
+          >
+            Browse Listings
+          </p>
+          <h1
+            className="text-white mb-4"
+            style={{ fontWeight: 800, fontSize: 40, letterSpacing: "-1px" }}
+          >
+            Explore Estates
+          </h1>
+          <p
+            className="mb-8"
+            style={{ color: "#64748b", maxWidth: 480, margin: "0 auto 32px" }}
+          >
+            Discover verified residential estates across Kenya. Filter by county
+            or price to find your perfect neighbourhood.
+          </p>
+          {/* Search */}
+          <div className="relative max-w-md mx-auto">
+            <Search
+              size={18}
+              className="absolute left-4 top-1/2 -translate-y-1/2"
+              style={{ color: "#64748b" }}
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by estate or location…"
+              className="w-full pl-12 pr-4 py-3.5 rounded-xl text-sm outline-none"
+              style={{
+                background: "#0d1a2e",
+                border: "1px solid #1e3a5f",
+                color: "#e2e8f0",
+              }}
+            />
+          </div>
         </div>
       </div>
 
