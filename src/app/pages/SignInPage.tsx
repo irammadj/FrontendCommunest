@@ -17,6 +17,7 @@ import { useAuth } from "../context/AuthContext";
 export default function SignInPage() {
   const navigate = useNavigate();
   const {
+    user,
     signIn,
     register,
     generateVerificationCode,
@@ -119,22 +120,6 @@ export default function SignInPage() {
     if (file) setProfilePreview(URL.createObjectURL(file));
   };
 
-  // Helper function to redirect based on user role
-  const redirectByRole = (email: string) => {
-    const users = JSON.parse(localStorage.getItem("communest_users") || "[]");
-    const currentUser = users.find((u: any) => u.email === email);
-
-    if (currentUser?.isSuperAdmin) {
-      navigate("/communest-admin"); // Super Admin → Admin Dashboard
-    } else if (currentUser?.isAdmin) {
-      navigate("/estate"); // Estate Admin → My Estate (admin view)
-    } else if (currentUser?.rentedHouseId) {
-      navigate("/estate"); // Tenant → My Estate (tenant view)
-    } else {
-      navigate("/explore"); // Regular User → Explore
-    }
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -157,8 +142,35 @@ export default function SignInPage() {
         if (result.message === "new_device") {
           trustDevice(form.email);
         }
-        // Redirect based on user role
-        redirectByRole(form.email);
+
+        // Determine redirect based on email (check demo accounts and localStorage)
+        let redirectPath = "/explore"; // default
+
+        if (form.email === "superadmin@communest.co.ke") {
+          redirectPath = "/communest-admin";
+        } else if (form.email === "admin@communest.co.ke") {
+          redirectPath = "/estate";
+        } else if (form.email === "tenant@communest.co.ke") {
+          redirectPath = "/estate";
+        } else {
+          // Check localStorage for custom registered users
+          const storedUsers = JSON.parse(
+            localStorage.getItem("communest_users") || "[]",
+          );
+          const foundUser = storedUsers.find(
+            (u: any) => u.email === form.email,
+          );
+
+          if (foundUser?.isSuperAdmin) {
+            redirectPath = "/communest-admin";
+          } else if (foundUser?.isAdmin) {
+            redirectPath = "/estate";
+          } else if (foundUser?.rentedHouseId) {
+            redirectPath = "/estate";
+          }
+        }
+
+        navigate(redirectPath);
       } else {
         setError(result.message);
       }
