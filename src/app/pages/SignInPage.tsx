@@ -119,6 +119,22 @@ export default function SignInPage() {
     if (file) setProfilePreview(URL.createObjectURL(file));
   };
 
+  // Helper function to redirect based on user role
+  const redirectByRole = (email: string) => {
+    const users = JSON.parse(localStorage.getItem("communest_users") || "[]");
+    const currentUser = users.find((u: any) => u.email === email);
+
+    if (currentUser?.isSuperAdmin) {
+      navigate("/communest-admin"); // Super Admin → Admin Dashboard
+    } else if (currentUser?.isAdmin) {
+      navigate("/estate"); // Estate Admin → My Estate (admin view)
+    } else if (currentUser?.rentedHouseId) {
+      navigate("/estate"); // Tenant → My Estate (tenant view)
+    } else {
+      navigate("/explore"); // Regular User → Explore
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -141,8 +157,8 @@ export default function SignInPage() {
         if (result.message === "new_device") {
           trustDevice(form.email);
         }
-        // Redirect to explore immediately after successful login
-        navigate("/explore");
+        // Redirect based on user role
+        redirectByRole(form.email);
       } else {
         setError(result.message);
       }
@@ -183,7 +199,8 @@ export default function SignInPage() {
       if (verifyEmailCode(verificationEmail, verificationCode)) {
         setError("");
         setVerificationCode("");
-        // Redirect to explore after email verification
+        // Redirect to explore (regular user) after email verification
+        // Note: Newly registered users are always regular users initially
         navigate("/explore");
       } else {
         setError("Invalid or expired verification code");
