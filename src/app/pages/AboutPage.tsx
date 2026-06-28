@@ -6,13 +6,23 @@ export default function AboutPage() {
     <div style={{ background: "#060d17", minHeight: "100vh" }}>
       {/* Hero Section */}
       <div
-        className="py-20 px-6"
+        className="py-20 px-6 text-center relative overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, #040b14, #060d17, #0a1830)",
-          borderBottom: "1px solid #1e3a5f",
+          backgroundImage: "url(/assets/estate-hero-bg.png)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
-        <div className="max-w-4xl mx-auto text-center">
+        {/* Dark overlay for readability */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(6,13,23,0.75) 0%, rgba(6,13,23,0.85) 100%)",
+          }}
+        />
+
+        <div className="max-w-4xl mx-auto text-center relative z-10">
           <p
             className="text-sm mb-3"
             style={{
