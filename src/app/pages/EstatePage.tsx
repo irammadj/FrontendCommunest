@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import {
   Building2,
@@ -18,6 +18,7 @@ import {
   Plus,
   ImagePlus,
   Reply,
+  Clock,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { mockEstates, mockHouses } from "../data/mockData";
@@ -25,6 +26,7 @@ import {
   sendNotificationEmails,
   getTenantEmailsForEstate,
 } from "../services/emailService";
+import type { House } from "../data/mockData";
 
 const mockAnnouncements = [
   {
@@ -234,6 +236,60 @@ export default function EstatePage() {
   const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
+  // House management state
+  const [estateHouses, setEstateHouses] = useState<House[]>(mockHouses);
+  const [confirmingHouseId, setConfirmingHouseId] = useState<string | null>(
+    null,
+  );
+
+  // Auto-delete occupied houses after 5 days (runs on mount and when tab changes)
+  useEffect(() => {
+    const deleteExpiredOccupiedHouses = () => {
+      const now = new Date();
+      const fiveDaysMs = 5 * 24 * 60 * 60 * 1000;
+
+      setEstateHouses((prevHouses) =>
+        prevHouses.filter((house) => {
+          if (house.status === "occupied" && house.occupiedDate) {
+            const occupiedDate = new Date(house.occupiedDate);
+            const timeSinceOccupied = now.getTime() - occupiedDate.getTime();
+            return timeSinceOccupied < fiveDaysMs; // Keep if less than 5 days
+          }
+          return true; // Keep all vacant houses
+        }),
+      );
+    };
+
+    deleteExpiredOccupiedHouses();
+  }, []);
+
+  // Mark house as occupied
+  const handleMarkAsOccupied = (houseId: string) => {
+    setEstateHouses((prevHouses) =>
+      prevHouses.map((house) =>
+        house.id === houseId
+          ? {
+              ...house,
+              status: "occupied",
+              occupiedDate: new Date().toISOString(),
+              isVacant: false,
+            }
+          : house,
+      ),
+    );
+    setConfirmingHouseId(null);
+  };
+
+  // Calculate days remaining until auto-delete
+  const getDaysUntilDelete = (occupiedDate: string): number => {
+    const occupied = new Date(occupiedDate);
+    const now = new Date();
+    const fiveDaysMs = 5 * 24 * 60 * 60 * 1000;
+    const timeRemaining = fiveDaysMs - (now.getTime() - occupied.getTime());
+    const daysRemaining = Math.ceil(timeRemaining / (24 * 60 * 60 * 1000));
+    return Math.max(0, daysRemaining);
+  };
+
   // Not signed in
   if (!isAuthenticated) {
     return (
@@ -331,6 +387,15 @@ export default function EstatePage() {
   );
   const rentedHouse = mockHouses.find((h) => h.id === user.rentedHouseId);
   const isAdmin = user.isAdmin;
+
+  // Get houses for this estate
+  const adminEstateHouses = estateHouses.filter(
+    (h) => h.estateId === estate?.id,
+  );
+  const vacantHouses = adminEstateHouses.filter((h) => h.status === "vacant");
+  const occupiedHouses = adminEstateHouses.filter(
+    (h) => h.status === "occupied",
+  );
 
   const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
     { id: "overview", label: "Overview", icon: Home },
@@ -1974,9 +2039,10 @@ export default function EstatePage() {
           </div>
         )}
 
-        {/* Manage (admin only) */}
+        {/* Manage (admin only) - HOUSES SECTION */}
         {activeTab === "manage" && isAdmin && (
-          <div className="space-y-6">
+          <div className="space-y-8">
+            {/* Button to post new house */}
             <button
               onClick={() => setShowPostHouse(true)}
               className="rounded-2xl p-7 flex items-center gap-5 text-left transition-all hover:-translate-y-1 group"
@@ -2002,6 +2068,262 @@ export default function EstatePage() {
                 </p>
               </div>
             </button>
+
+            {/* VACANT HOUSES SECTION */}
+            {vacantHouses.length > 0 && (
+              <div>
+                <h3
+                  className="text-white mb-4"
+                  style={{ fontWeight: 700, fontSize: 20 }}
+                >
+                  Vacant Houses ({vacantHouses.length})
+                </h3>
+                <div className="space-y-4">
+                  {vacantHouses.map((house) => (
+                    <div
+                      key={house.id}
+                      className="rounded-2xl p-6 overflow-hidden"
+                      style={{
+                        background: "#0d1a2e",
+                        border: "1px solid #1e3a5f",
+                      }}
+                    >
+                      <div className="flex flex-col sm:flex-row gap-6 items-start">
+                        {/* House Photo */}
+                        {house.photos[0] && (
+                          <img
+                            src={house.photos[0]}
+                            alt={house.houseNumber}
+                            className="w-full sm:w-32 h-32 rounded-xl object-cover flex-shrink-0"
+                          />
+                        )}
+
+                        {/* House Details */}
+                        <div className="flex-1">
+                          <div className="flex items-start justify-between mb-3">
+                            <div>
+                              <h4
+                                className="text-white mb-1"
+                                style={{ fontWeight: 700, fontSize: 18 }}
+                              >
+                                Unit {house.houseNumber}
+                              </h4>
+                              <p
+                                className="text-sm"
+                                style={{ color: "#64748b" }}
+                              >
+                                {house.bedrooms} bed · {house.area} · Floor{" "}
+                                {house.floor}
+                              </p>
+                            </div>
+                            <span
+                              className="px-3 py-1 rounded-full text-xs flex-shrink-0"
+                              style={{
+                                background: "rgba(16,185,129,0.12)",
+                                color: "#10b981",
+                                border: "1px solid rgba(16,185,129,0.3)",
+                                fontWeight: 600,
+                              }}
+                            >
+                              ✓ Vacant
+                            </span>
+                          </div>
+
+                          <p
+                            className="text-sm mb-4"
+                            style={{ color: "#94a3b8" }}
+                          >
+                            {house.description}
+                          </p>
+
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {house.amenities.map((amenity) => (
+                              <span
+                                key={amenity}
+                                className="px-2.5 py-1 rounded-lg text-xs"
+                                style={{
+                                  background: "rgba(29,111,206,0.1)",
+                                  color: "#3b82f6",
+                                  border: "1px solid rgba(29,111,206,0.2)",
+                                }}
+                              >
+                                {amenity}
+                              </span>
+                            ))}
+                          </div>
+
+                          <div className="flex items-center justify-between">
+                            <p style={{ color: "#10b981", fontWeight: 700 }}>
+                              KES {house.rent.toLocaleString()} / month
+                            </p>
+                            <button
+                              onClick={() => setConfirmingHouseId(house.id)}
+                              className="px-4 py-2 rounded-xl text-sm text-white transition-all hover:opacity-90"
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, #1d6fce, #0ea5e9)",
+                                fontWeight: 600,
+                              }}
+                            >
+                              Mark as Occupied
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* OCCUPIED HOUSES SECTION */}
+            {occupiedHouses.length > 0 && (
+              <div>
+                <h3
+                  className="text-white mb-4"
+                  style={{ fontWeight: 700, fontSize: 20 }}
+                >
+                  Occupied Houses ({occupiedHouses.length})
+                </h3>
+                <div className="space-y-4">
+                  {occupiedHouses.map((house) => {
+                    const daysRemaining = house.occupiedDate
+                      ? getDaysUntilDelete(house.occupiedDate)
+                      : 0;
+                    return (
+                      <div
+                        key={house.id}
+                        className="rounded-2xl p-6 overflow-hidden"
+                        style={{
+                          background: "#0d1a2e",
+                          border: "1px solid #1e3a5f",
+                          opacity: daysRemaining <= 1 ? 0.7 : 1,
+                        }}
+                      >
+                        <div className="flex flex-col sm:flex-row gap-6 items-start">
+                          {/* House Photo */}
+                          {house.photos[0] && (
+                            <img
+                              src={house.photos[0]}
+                              alt={house.houseNumber}
+                              className="w-full sm:w-32 h-32 rounded-xl object-cover flex-shrink-0"
+                            />
+                          )}
+
+                          {/* House Details */}
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between mb-3">
+                              <div>
+                                <h4
+                                  className="text-white mb-1"
+                                  style={{ fontWeight: 700, fontSize: 18 }}
+                                >
+                                  Unit {house.houseNumber}
+                                </h4>
+                                <p
+                                  className="text-sm"
+                                  style={{ color: "#64748b" }}
+                                >
+                                  {house.bedrooms} bed · {house.area} · Floor{" "}
+                                  {house.floor}
+                                </p>
+                              </div>
+                              <div className="flex flex-col items-end gap-2">
+                                <span
+                                  className="px-3 py-1 rounded-full text-xs flex-shrink-0"
+                                  style={{
+                                    background: "rgba(245,158,11,0.12)",
+                                    color: "#f59e0b",
+                                    border: "1px solid rgba(245,158,11,0.3)",
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Occupied
+                                </span>
+                                {daysRemaining <= 2 && (
+                                  <span
+                                    className="px-2 py-0.5 rounded-full text-xs flex-shrink-0 flex items-center gap-1"
+                                    style={{
+                                      background: "rgba(239,68,68,0.12)",
+                                      color: "#f87171",
+                                      border: "1px solid rgba(239,68,68,0.3)",
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    <Clock size={12} />
+                                    Deleting in {daysRemaining} day
+                                    {daysRemaining !== 1 ? "s" : ""}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            <p
+                              className="text-sm mb-4"
+                              style={{ color: "#94a3b8" }}
+                            >
+                              {house.description}
+                            </p>
+
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              {house.amenities.map((amenity) => (
+                                <span
+                                  key={amenity}
+                                  className="px-2.5 py-1 rounded-lg text-xs"
+                                  style={{
+                                    background: "rgba(29,111,206,0.1)",
+                                    color: "#3b82f6",
+                                    border: "1px solid rgba(29,111,206,0.2)",
+                                  }}
+                                >
+                                  {amenity}
+                                </span>
+                              ))}
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                              <p style={{ color: "#10b981", fontWeight: 700 }}>
+                                KES {house.rent.toLocaleString()} / month
+                              </p>
+                              <p
+                                className="text-xs"
+                                style={{ color: "#475569" }}
+                              >
+                                Marked occupied:{" "}
+                                {house.occupiedDate
+                                  ? new Date(house.occupiedDate)
+                                      .toISOString()
+                                      .split("T")[0]
+                                  : "—"}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Empty state */}
+            {vacantHouses.length === 0 && occupiedHouses.length === 0 && (
+              <div
+                className="text-center py-12 rounded-2xl"
+                style={{ background: "#0d1a2e", border: "1px solid #1e3a5f" }}
+              >
+                <Home
+                  size={40}
+                  style={{ color: "#1e3a5f", margin: "0 auto 12px" }}
+                />
+                <p className="text-white mb-2" style={{ fontWeight: 600 }}>
+                  No houses yet
+                </p>
+                <p className="text-sm" style={{ color: "#64748b" }}>
+                  Post a vacant house to get started managing your listings.
+                </p>
+              </div>
+            )}
 
             {/* Post House modal */}
             {showPostHouse && (
@@ -2173,6 +2495,70 @@ export default function EstatePage() {
                   >
                     Submit Listing
                   </button>
+                </div>
+              </div>
+            )}
+
+            {/* Confirmation Modal - Mark as Occupied */}
+            {confirmingHouseId && (
+              <div
+                className="fixed inset-0 z-50 flex items-center justify-center px-4"
+                style={{
+                  background: "rgba(0,0,0,0.7)",
+                  backdropFilter: "blur(4px)",
+                }}
+              >
+                <div
+                  className="w-full max-w-md rounded-2xl p-8"
+                  style={{ background: "#0d1a2e", border: "1px solid #1e3a5f" }}
+                >
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center mb-4 mx-auto"
+                    style={{
+                      background: "rgba(245,158,11,0.12)",
+                      border: "1px solid rgba(245,158,11,0.3)",
+                    }}
+                  >
+                    <AlertCircle size={24} style={{ color: "#f59e0b" }} />
+                  </div>
+                  <h3
+                    className="text-white text-center mb-2"
+                    style={{ fontWeight: 700, fontSize: 20 }}
+                  >
+                    Mark as Occupied?
+                  </h3>
+                  <p
+                    className="text-sm text-center mb-6"
+                    style={{ color: "#94a3b8", lineHeight: 1.8 }}
+                  >
+                    Once marked as occupied, this house will disappear from the
+                    website after <strong>5 days</strong>. This action cannot be
+                    undone.
+                  </p>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setConfirmingHouseId(null)}
+                      className="flex-1 px-4 py-2.5 rounded-xl text-sm transition-all"
+                      style={{
+                        background: "#0a1628",
+                        color: "#94a3b8",
+                        border: "1px solid #1e3a5f",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => handleMarkAsOccupied(confirmingHouseId)}
+                      className="flex-1 px-4 py-2.5 rounded-xl text-sm text-white transition-all hover:opacity-90"
+                      style={{
+                        background: "linear-gradient(135deg, #f59e0b, #fbbf24)",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Yes, Mark Occupied
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

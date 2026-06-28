@@ -28,13 +28,31 @@ export interface House {
   type: string;
   isVacant: boolean;
   description: string;
+  status?: "vacant" | "occupied"; // New field: vacant (default) or occupied
+  occupiedDate?: string; // New field: ISO date string when marked as occupied
 }
 
 export const KENYA_COUNTIES = [
-  "All Counties", "Nairobi", "Mombasa", "Kisumu", "Nakuru",
-  "Uasin Gishu", "Kiambu", "Machakos", "Meru", "Kakamega",
-  "Kisii", "Nyeri", "Embu", "Kericho", "Garissa",
-  "Kilifi", "Kwale", "Taita Taveta", "Lamu", "Malindi"
+  "All Counties",
+  "Nairobi",
+  "Mombasa",
+  "Kisumu",
+  "Nakuru",
+  "Uasin Gishu",
+  "Kiambu",
+  "Machakos",
+  "Meru",
+  "Kakamega",
+  "Kisii",
+  "Nyeri",
+  "Embu",
+  "Kericho",
+  "Garissa",
+  "Kilifi",
+  "Kwale",
+  "Taita Taveta",
+  "Lamu",
+  "Malindi",
 ];
 
 export const mockEstates: Estate[] = [
@@ -48,10 +66,19 @@ export const mockEstates: Estate[] = [
     management: "Greenview Properties Ltd",
     email: "info@greenviewgardens.co.ke",
     phone: "+254 712 345 678",
-    amenities: ["Swimming Pool", "Gym", "24/7 Security", "Parking", "CCTV", "Children's Play Area", "Backup Generator"],
+    amenities: [
+      "Swimming Pool",
+      "Gym",
+      "24/7 Security",
+      "Parking",
+      "CCTV",
+      "Children's Play Area",
+      "Backup Generator",
+    ],
     photo: "https://images.unsplash.com/photo-1630241466166-22e43156d8c0?w=800",
     approved: true,
-    description: "A premium residential estate nestled in the heart of Kilimani, offering modern living in a serene environment with world-class amenities."
+    description:
+      "A premium residential estate nestled in the heart of Kilimani, offering modern living in a serene environment with world-class amenities.",
   },
   {
     id: "est2",
@@ -63,10 +90,19 @@ export const mockEstates: Estate[] = [
     management: "Azure Properties Kenya",
     email: "hello@azureheights.co.ke",
     phone: "+254 733 456 789",
-    amenities: ["Ocean View", "Swimming Pool", "24/7 Security", "Parking", "Gym", "Restaurant", "Fibre Internet"],
+    amenities: [
+      "Ocean View",
+      "Swimming Pool",
+      "24/7 Security",
+      "Parking",
+      "Gym",
+      "Restaurant",
+      "Fibre Internet",
+    ],
     photo: "https://images.unsplash.com/photo-1738007709959-4b029d0c5708?w=800",
     approved: true,
-    description: "Experience coastal living at its finest with breathtaking ocean views and premium amenities at Mombasa Azure Heights."
+    description:
+      "Experience coastal living at its finest with breathtaking ocean views and premium amenities at Mombasa Azure Heights.",
   },
   {
     id: "est3",
@@ -78,10 +114,19 @@ export const mockEstates: Estate[] = [
     management: "Premier Estates Ltd",
     email: "info@westlandspremier.co.ke",
     phone: "+254 722 567 890",
-    amenities: ["Co-working Space", "Rooftop Garden", "24/7 Security", "EV Charging", "Gym", "Concierge", "Smart Home"],
+    amenities: [
+      "Co-working Space",
+      "Rooftop Garden",
+      "24/7 Security",
+      "EV Charging",
+      "Gym",
+      "Concierge",
+      "Smart Home",
+    ],
     photo: "https://images.unsplash.com/photo-1673902249309-940a9f0871cd?w=800",
     approved: true,
-    description: "Redefining urban living in Westlands with smart home technology, co-working spaces, and premium lifestyle amenities."
+    description:
+      "Redefining urban living in Westlands with smart home technology, co-working spaces, and premium lifestyle amenities.",
   },
   {
     id: "est4",
@@ -93,10 +138,18 @@ export const mockEstates: Estate[] = [
     management: "Lakeside Properties Kenya",
     email: "info@lakesidekisumu.co.ke",
     phone: "+254 700 111 222",
-    amenities: ["Lake View", "Swimming Pool", "24/7 Security", "Parking", "Tennis Court", "Backup Generator"],
+    amenities: [
+      "Lake View",
+      "Swimming Pool",
+      "24/7 Security",
+      "Parking",
+      "Tennis Court",
+      "Backup Generator",
+    ],
     photo: "https://images.unsplash.com/photo-1630241466166-22e43156d8c0?w=800",
     approved: true,
-    description: "Enjoy scenic Lake Victoria views in a tranquil, well-secured estate in the heart of Milimani, Kisumu."
+    description:
+      "Enjoy scenic Lake Victoria views in a tranquil, well-secured estate in the heart of Milimani, Kisumu.",
   },
   {
     id: "est5",
@@ -108,10 +161,18 @@ export const mockEstates: Estate[] = [
     management: "Highlands Properties Ltd",
     email: "info@nakuruhighlands.co.ke",
     phone: "+254 700 333 444",
-    amenities: ["24/7 Security", "Parking", "Children's Play Area", "CCTV", "Backup Generator", "Green Spaces"],
+    amenities: [
+      "24/7 Security",
+      "Parking",
+      "Children's Play Area",
+      "CCTV",
+      "Backup Generator",
+      "Green Spaces",
+    ],
     photo: "https://images.unsplash.com/photo-1738007709959-4b029d0c5708?w=800",
     approved: true,
-    description: "Affordable, spacious living in Nakuru with excellent security and family-friendly amenities in a growing urban hub."
+    description:
+      "Affordable, spacious living in Nakuru with excellent security and family-friendly amenities in a growing urban hub.",
   },
   {
     id: "est6",
@@ -123,11 +184,20 @@ export const mockEstates: Estate[] = [
     management: "Royal Gardens Kenya Ltd",
     email: "info@royalgardens.co.ke",
     phone: "+254 700 555 666",
-    amenities: ["Swimming Pool", "Gym", "24/7 Security", "Mall Access", "School Nearby", "Hospital Nearby", "Parking"],
+    amenities: [
+      "Swimming Pool",
+      "Gym",
+      "24/7 Security",
+      "Mall Access",
+      "School Nearby",
+      "Hospital Nearby",
+      "Parking",
+    ],
     photo: "https://images.unsplash.com/photo-1673902249309-940a9f0871cd?w=800",
     approved: true,
-    description: "A vast, family-centered estate in Ruiru offering affordable housing with excellent access to schools, hospitals, and shopping centres."
-  }
+    description:
+      "A vast, family-centered estate in Ruiru offering affordable housing with excellent access to schools, hospitals, and shopping centres.",
+  },
 ];
 
 export const mockHouses: House[] = [
@@ -137,7 +207,13 @@ export const mockHouses: House[] = [
     houseNumber: "A-101",
     area: "85 sqm",
     rent: 55000,
-    amenities: ["Balcony", "En-suite Master", "BIC", "DSTV Point", "High-speed Internet"],
+    amenities: [
+      "Balcony",
+      "En-suite Master",
+      "BIC",
+      "DSTV Point",
+      "High-speed Internet",
+    ],
     photos: [
       "https://images.unsplash.com/photo-1764921587464-f3cdd46fb4c9?w=800",
       "https://images.unsplash.com/photo-1658595149174-ff76486ec800?w=800",
@@ -147,7 +223,9 @@ export const mockHouses: House[] = [
     floor: 1,
     type: "Apartment",
     isVacant: true,
-    description: "Elegant 2-bedroom apartment with a beautiful balcony view of the estate gardens. Fully fitted kitchen and modern finishes throughout."
+    status: "vacant",
+    description:
+      "Elegant 2-bedroom apartment with a beautiful balcony view of the estate gardens. Fully fitted kitchen and modern finishes throughout.",
   },
   {
     id: "h2",
@@ -155,7 +233,14 @@ export const mockHouses: House[] = [
     houseNumber: "B-203",
     area: "120 sqm",
     rent: 85000,
-    amenities: ["Balcony", "En-suite Master", "BIC", "DSTV Point", "Study Room", "High-speed Internet"],
+    amenities: [
+      "Balcony",
+      "En-suite Master",
+      "BIC",
+      "DSTV Point",
+      "Study Room",
+      "High-speed Internet",
+    ],
     photos: [
       "https://images.unsplash.com/photo-1764921587475-866c1d48dc48?w=800",
       "https://images.unsplash.com/photo-1692690134767-90bcc75d5653?w=800",
@@ -165,7 +250,9 @@ export const mockHouses: House[] = [
     floor: 2,
     type: "Apartment",
     isVacant: true,
-    description: "Spacious 3-bedroom apartment with a dedicated study room, perfect for families or professionals working from home."
+    status: "vacant",
+    description:
+      "Spacious 3-bedroom apartment with a dedicated study room, perfect for families or professionals working from home.",
   },
   {
     id: "h3",
@@ -182,7 +269,9 @@ export const mockHouses: House[] = [
     floor: 3,
     type: "Studio Plus",
     isVacant: false,
-    description: "Cozy 1-bedroom unit ideal for singles or couples, with a compact but well-designed layout and modern fittings."
+    status: "occupied",
+    description:
+      "Cozy 1-bedroom unit ideal for singles or couples, with a compact but well-designed layout and modern fittings.",
   },
   {
     id: "h4",
@@ -190,7 +279,14 @@ export const mockHouses: House[] = [
     houseNumber: "OV-401",
     area: "110 sqm",
     rent: 95000,
-    amenities: ["Ocean View Balcony", "En-suite Master", "BIC", "Air Conditioning", "High-speed Internet", "Dishwasher"],
+    amenities: [
+      "Ocean View Balcony",
+      "En-suite Master",
+      "BIC",
+      "Air Conditioning",
+      "High-speed Internet",
+      "Dishwasher",
+    ],
     photos: [
       "https://images.unsplash.com/photo-1658595149174-ff76486ec800?w=800",
       "https://images.unsplash.com/photo-1764921587464-f3cdd46fb4c9?w=800",
@@ -200,7 +296,9 @@ export const mockHouses: House[] = [
     floor: 4,
     type: "Penthouse Suite",
     isVacant: true,
-    description: "Breathtaking penthouse suite with panoramic ocean views, premium finishes, and air conditioning throughout."
+    status: "vacant",
+    description:
+      "Breathtaking penthouse suite with panoramic ocean views, premium finishes, and air conditioning throughout.",
   },
   {
     id: "h5",
@@ -208,7 +306,12 @@ export const mockHouses: House[] = [
     houseNumber: "B-102",
     area: "75 sqm",
     rent: 62000,
-    amenities: ["Garden View Balcony", "BIC", "Air Conditioning", "High-speed Internet"],
+    amenities: [
+      "Garden View Balcony",
+      "BIC",
+      "Air Conditioning",
+      "High-speed Internet",
+    ],
     photos: [
       "https://images.unsplash.com/photo-1692690134767-90bcc75d5653?w=800",
       "https://images.unsplash.com/photo-1764921587475-866c1d48dc48?w=800",
@@ -218,7 +321,9 @@ export const mockHouses: House[] = [
     floor: 1,
     type: "Apartment",
     isVacant: true,
-    description: "Fresh 2-bedroom apartment overlooking the estate gardens, with modern fittings and air conditioning."
+    status: "vacant",
+    description:
+      "Fresh 2-bedroom apartment overlooking the estate gardens, with modern fittings and air conditioning.",
   },
   {
     id: "h6",
@@ -226,7 +331,14 @@ export const mockHouses: House[] = [
     houseNumber: "T-802",
     area: "145 sqm",
     rent: 130000,
-    amenities: ["Rooftop Terrace Access", "Smart Home System", "En-suite Master", "BIC", "Fibre Internet", "EV Charger Point"],
+    amenities: [
+      "Rooftop Terrace Access",
+      "Smart Home System",
+      "En-suite Master",
+      "BIC",
+      "Fibre Internet",
+      "EV Charger Point",
+    ],
     photos: [
       "https://images.unsplash.com/photo-1764921587475-866c1d48dc48?w=800",
       "https://images.unsplash.com/photo-1658595149174-ff76486ec800?w=800",
@@ -236,7 +348,9 @@ export const mockHouses: House[] = [
     floor: 8,
     type: "Premium Apartment",
     isVacant: true,
-    description: "Top-floor premium apartment with rooftop terrace access, integrated smart home system, and the finest finishes in Westlands."
+    status: "vacant",
+    description:
+      "Top-floor premium apartment with rooftop terrace access, integrated smart home system, and the finest finishes in Westlands.",
   },
   {
     id: "h7",
@@ -244,7 +358,12 @@ export const mockHouses: House[] = [
     houseNumber: "M-402",
     area: "65 sqm",
     rent: 72000,
-    amenities: ["Co-working Access", "Smart Home System", "BIC", "Fibre Internet"],
+    amenities: [
+      "Co-working Access",
+      "Smart Home System",
+      "BIC",
+      "Fibre Internet",
+    ],
     photos: [
       "https://images.unsplash.com/photo-1734362815901-24bdeb199da5?w=800",
       "https://images.unsplash.com/photo-1764921587464-f3cdd46fb4c9?w=800",
@@ -254,7 +373,9 @@ export const mockHouses: House[] = [
     floor: 4,
     type: "Smart Studio",
     isVacant: true,
-    description: "Compact smart studio designed for urban professionals, with integrated smart home tech and co-working space access."
+    status: "vacant",
+    description:
+      "Compact smart studio designed for urban professionals, with integrated smart home tech and co-working space access.",
   },
   {
     id: "h8",
@@ -262,7 +383,13 @@ export const mockHouses: House[] = [
     houseNumber: "LV-301",
     area: "95 sqm",
     rent: 58000,
-    amenities: ["Lake View Balcony", "En-suite Master", "BIC", "High-speed Internet", "Parking"],
+    amenities: [
+      "Lake View Balcony",
+      "En-suite Master",
+      "BIC",
+      "High-speed Internet",
+      "Parking",
+    ],
     photos: [
       "https://images.unsplash.com/photo-1764921587464-f3cdd46fb4c9?w=800",
       "https://images.unsplash.com/photo-1692690134767-90bcc75d5653?w=800",
@@ -272,6 +399,8 @@ export const mockHouses: House[] = [
     floor: 3,
     type: "Apartment",
     isVacant: true,
-    description: "Beautiful 2-bedroom with an unobstructed view of Lake Victoria. Serene, spacious and professionally finished."
-  }
+    status: "vacant",
+    description:
+      "Beautiful 2-bedroom with an unobstructed view of Lake Victoria. Serene, spacious and professionally finished.",
+  },
 ];
