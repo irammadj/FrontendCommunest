@@ -14,32 +14,27 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsOfServicePage from "./pages/TermsOfServicePage";
 import CookiePolicyPage from "./pages/CookiePolicyPage";
 
-export const router = createBrowserRouter(
-  [
-    {
-      path: "/",
-      Component: Layout,
-      children: [
-        { index: true, Component: HomePage },
-        { path: "explore", Component: ExplorePage },
-        { path: "explore/:estateId", Component: EstateDetailPage },
-        {
-          path: "explore/:estateId/house/:houseId",
-          Component: HouseDetailPage,
-        },
-        { path: "estate", Component: EstatePage },
-        { path: "about", Component: AboutPage },
-        { path: "list-estate", Component: ListEstatePage },
-        { path: "profile", Component: ProfilePage },
-        { path: "signin", Component: SignInPage },
-        { path: "communest-admin", Component: CommunestAdminDashboard },
-        { path: "privacy-policy", Component: PrivacyPolicyPage },
-        { path: "terms-of-service", Component: TermsOfServicePage },
-        { path: "cookie-policy", Component: CookiePolicyPage },
-      ],
-    },
-  ],
+export const router = createBrowserRouter([
   {
-    basename: "/FrontendCommunest/",
+    path: "/",
+    Component: Layout,
+    children: [
+      { index: true, Component: HomePage },
+      { path: "explore", Component: ExplorePage },
+      { path: "explore/:estateId", Component: EstateDetailPage },
+      {
+        path: "explore/:estateId/house/:houseId",
+        Component: HouseDetailPage,
+      },
+      { path: "estate", Component: EstatePage },
+      { path: "about", Component: AboutPage },
+      { path: "list-estate", Component: ListEstatePage },
+      { path: "profile", Component: ProfilePage },
+      { path: "signin", Component: SignInPage },
+      { path: "communest-admin", Component: CommunestAdminDashboard },
+      { path: "privacy-policy", Component: PrivacyPolicyPage },
+      { path: "terms-of-service", Component: TermsOfServicePage },
+      { path: "cookie-policy", Component: CookiePolicyPage },
+    ],
   },
-);
+]);
