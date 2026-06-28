@@ -76,11 +76,22 @@ export default function HomePage() {
         id="hero-section"
         className="relative min-h-[90vh] flex items-center"
         style={{
-          background:
-            "linear-gradient(135deg, #040b14 0%, #060d17 40%, #0a1830 100%)",
+          backgroundImage: "url(/assets/estate-hero-bg.png)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           overflow: "hidden",
         }}
       >
+        {/* Dark overlay */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(4,11,20,0.85) 0%, rgba(6,13,23,0.80) 40%, rgba(10,24,48,0.85) 100%)",
+          }}
+        />
+
+        {/* Radial glow overlay — kept from original */}
         <div
           className="absolute inset-0 opacity-10"
           style={{
@@ -89,7 +100,7 @@ export default function HomePage() {
           }}
         />
 
-        <div className="relative max-w-7xl mx-auto px-6 py-20 text-center w-full">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 text-center w-full">
           <h1
             className="text-5xl sm:text-6xl lg:text-7xl text-white mb-6"
             style={{ fontWeight: 800, letterSpacing: "-2px", lineHeight: 1.1 }}
