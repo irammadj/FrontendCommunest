@@ -281,7 +281,7 @@ export default function ListEstatePage() {
       <div
         className="py-14 px-6 text-center relative overflow-hidden"
         style={{
-          backgroundImage: "url(/FrontendCommunest/assets/estate-hero-bg.png)",
+          backgroundImage: `url(${import.meta.env.BASE_URL}assets/estate-hero-bg.png)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           // backgroundAttachment: "fixed" removed — causes image to not render in many browsers

@@ -25,7 +25,6 @@ export default function ExplorePage() {
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
   const [filterMode, setFilterMode] = useState<"county" | "price">("county");
 
-  // Calculate minimum rent for each estate
   const getMinimumRent = (estateId: string): number => {
     const estateHouses = mockHouses.filter((h) => h.estateId === estateId);
     if (estateHouses.length === 0) return 0;
@@ -39,11 +38,8 @@ export default function ExplorePage() {
       !searchQuery ||
       e.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       e.location.toLowerCase().includes(searchQuery.toLowerCase());
-
-    // Price filter: check if minimum rent is under selected threshold
     const matchesPrice =
       !selectedPrice || getMinimumRent(e.id) <= selectedPrice;
-
     return matchesCounty && matchesSearch && matchesPrice;
   });
 
@@ -59,7 +55,7 @@ export default function ExplorePage() {
       <div
         className="py-14 px-6 text-center relative overflow-hidden"
         style={{
-          backgroundImage: "url(/FrontendCommunest/assets/estate-hero-bg.png)",
+          backgroundImage: `url(${import.meta.env.BASE_URL}assets/estate-hero-bg.png)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -127,7 +123,6 @@ export default function ExplorePage() {
           {/* Sidebar Filter — desktop */}
           <aside className="hidden lg:block w-56 flex-shrink-0">
             <div className="sticky top-6 space-y-5">
-              {/* Filter Mode Toggle */}
               <div
                 className="rounded-2xl p-5"
                 style={{ background: "#0d1a2e", border: "1px solid #1e3a5f" }}
@@ -209,7 +204,6 @@ export default function ExplorePage() {
                 </div>
               </div>
 
-              {/* County Filter - shows when filterMode is 'county' */}
               {filterMode === "county" && (
                 <div
                   className="rounded-2xl p-5"
@@ -258,7 +252,6 @@ export default function ExplorePage() {
                 </div>
               )}
 
-              {/* Price Filter - shows when filterMode is 'price' */}
               {filterMode === "price" && (
                 <div
                   className="rounded-2xl p-5"
@@ -338,7 +331,6 @@ export default function ExplorePage() {
                 </div>
               )}
 
-              {/* Clear Filters Button */}
               {(selectedCounty !== "All Counties" ||
                 selectedPrice !== null ||
                 searchQuery) && (
@@ -386,7 +378,6 @@ export default function ExplorePage() {
                   className="rounded-2xl p-4 space-y-4"
                   style={{ background: "#0d1a2e", border: "1px solid #1e3a5f" }}
                 >
-                  {/* Filter Mode Toggle Mobile */}
                   <div>
                     <p
                       className="text-xs mb-3"
@@ -455,7 +446,6 @@ export default function ExplorePage() {
                     </div>
                   </div>
 
-                  {/* County Filter Mobile - shows when filterMode is 'county' */}
                   {filterMode === "county" && (
                     <div>
                       <p
@@ -505,7 +495,6 @@ export default function ExplorePage() {
                     </div>
                   )}
 
-                  {/* Price Filter Mobile - shows when filterMode is 'price' */}
                   {filterMode === "price" && (
                     <div>
                       <p
@@ -704,7 +693,6 @@ export default function ExplorePage() {
                           </span>
                         </div>
 
-                        {/* Minimum Price Badge */}
                         <div
                           className="mb-4 px-3 py-2 rounded-lg"
                           style={{
@@ -729,7 +717,6 @@ export default function ExplorePage() {
                           </p>
                         </div>
 
-                        {/* Key details */}
                         <div className="grid grid-cols-2 gap-2 mb-4">
                           {[
                             { label: "Area", value: estate.area },
@@ -769,7 +756,6 @@ export default function ExplorePage() {
                           ))}
                         </div>
 
-                        {/* Amenities */}
                         <div className="flex flex-wrap gap-1.5 mb-5">
                           {estate.amenities.slice(0, 3).map((a) => (
                             <span
